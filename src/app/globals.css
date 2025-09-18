@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+.error-text {
+    @apply text-red-500;
+}
+
+.warn-text {
+    @apply text-yellow-300;
+}
+
+.success-text {
+    @apply text-lime-600;
+}
+
+@layer utilities {
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+}
