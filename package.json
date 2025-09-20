@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    
     "lint": "next lint",
     "dev:web": "next dev --turbopack -p 3000",
     "build:web": "next build",
@@ -17,9 +16,9 @@
     "discord.js": "^14.22.1",
     "dotenv": "^17.2.2",
     "nanoid": "^5.1.5",
-    "next": "15.4.1",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "next": "^15.5.3",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "wildmongowhispers": "^1.4.4"
   },
   "devDependencies": {

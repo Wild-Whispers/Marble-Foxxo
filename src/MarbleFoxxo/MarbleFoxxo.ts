@@ -3,12 +3,17 @@ import {
     Collection,
     Events,
     GatewayIntentBits,
-    Interaction
+    Guild,
+    Interaction,
+    MessageFlags,
+    REST,
+    Routes
 } from "discord.js";
 import dotenv from "dotenv";
 import { getMongo } from "@/lib/mongo";
 import path from "node:path";
 import { readdirSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 
 // Configure dotenv
 dotenv.config();
@@ -25,44 +30,110 @@ const client = new Client({
     commands: Collection<string, any>;
 };
 
-// Register commands
-client.commands = new Collection();
+const rest = new REST().setToken(process.env.MARBLE_FOXXO_SECRET!);
 
-const foldersPath = path.join(__dirname, "src", "MarbleFoxxo", "Discord", "Commands");
-const commandFolders = readdirSync(foldersPath);
+// Register slash commands
+(async () => {
+    client.commands = new Collection();
 
-for (const folder of commandFolders) {
-    const commandsPath = path.join(foldersPath, folder);
-    const commandFiles = readdirSync(commandsPath).filter(file => file.endsWith(".ts"));
 
-    for (const file of commandFiles) {
-        const filePath = path.join(commandsPath, file);
-        const command = await import(filePath);
+    const foldersPath = path.join(__dirname, "Discord", "Commands");
+    const commandFolders = readdirSync(foldersPath);
 
-        if ("data" in command && "execute" in command) {
-            client.commands.set(command.data.name, command);
-        } else {
-            console.warn(`[${new Date().toISOString()}] [Command Register] The command at ${filePath} is missing a required "data" or "execute" property.`);
+    for (const folder of commandFolders) {
+        const commandsPath = path.join(foldersPath, folder);
+        const commandFiles = readdirSync(commandsPath).filter(file => file.endsWith(".ts"));
+
+        for (const file of commandFiles) {
+            const filePath = path.join(commandsPath, file);
+            const commandModule = await import(pathToFileURL(filePath).href);
+            const command = commandModule.default ?? commandModule;
+
+            if ("data" in command && "execute" in command) {
+                client.commands.set(command.data.name, command);
+            } else {
+                console.warn(`[${new Date().toISOString()}] [Command Register] The command at ${filePath} is missing a required "data" or "execute" property.`);
+            }
         }
     }
-}
+
+    try {
+        console.info(`[${new Date().toISOString()}] [Slash Commands] Refreshing application commands.`);
+
+        await rest.put(
+            Routes.applicationCommands(process.env.MARBLE_FOXXO_CLIENT!),
+            { body: client.commands.map(cmd => cmd.data.toJSON()) }
+        );
+
+        console.info(`[${new Date().toISOString()}] [Slash Commands] Successfully refreshed application commands.`);
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    } catch (error: any) {
+        console.error(`[${new Date().toISOString()}] [Slash Commands] Error refreshing appliation commands:`, error);
+    }
+})();
 
 /* ------------------------------------------------------------ Listeners ------------------------------------------------------------ */
-client.on(Events.ClientReady, async readyClient => {
+client.once(Events.ClientReady, async readyClient => {
     // Log ready status
     console.info(`[${new Date().toISOString()}] Logged in as ${readyClient.user.tag}!`);
+
+    // Add any guilds to database that aren't already there
+    // This technically should never happen, but just in case
+    for (const [, guild] of client.guilds.cache) {
+        await addNewGuildToDatabase(guild);
+    }
 });
 
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {
-    console.info(`[${new Date().toISOString()}] [Guild Interaction] Interaction Created - ${interaction.channelId}`);
+    if (!interaction.isChatInputCommand()) return;
+
+    const command = client.commands.get(interaction.commandName);
+
+    if (!command) {
+        console.error(`[${new Date().toISOString()}] [Guild Interaction Error] No command matching ${interaction.commandName} was found.`);
+        return;
+    }
+
+    try {
+        console.info(`[${new Date().toISOString()}] [Guild Interaction] Valid Interaction Created - ${interaction.channelId}`);
+
+        await command.execute(interaction);
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    } catch (error: any) {
+        console.error(`[${new Date().toISOString()}] [Guild Interaction Error] Error executing ${interaction.commandName}:`, error);
+
+        if (interaction.replied || interaction.deferred) {
+            await interaction.followUp({
+                content: "There was an error while executing this command!",
+                flags: MessageFlags.Ephemeral
+            });
+        } else {
+            await interaction.reply({
+                content: "There was an error while executing this command!",
+                flags: MessageFlags.Ephemeral
+            });
+        }
+    }
 });
 
 client.on(Events.GuildCreate, async guild => {
     console.info(`[${new Date().toISOString()}] [Guild Added] ${guild.id} | ${guild.name}`);
+
+    await addNewGuildToDatabase(guild);
 });
 
 client.on(Events.GuildDelete, async guild => {
     console.info(`[${new Date().toISOString()}] [Guild Removed] ${guild.id} | ${guild.name}`);
+
+    await mongo.database
+        .collection("guilds")
+        .updateOne(
+            { guildID: guild.id },
+            {
+                $set: { active: false }
+            },
+            { upsert: false }
+        );
 });
 
 process.on("SIGINT", async () => {
@@ -106,3 +177,23 @@ client.login(process.env.MARBLE_FOXXO_SECRET).catch((error: Error) => {
 
     console.error(`[${new Date().toISOString()}] [Bot Login Error]`, error);
 });
+
+// Helpers
+async function addNewGuildToDatabase(guild: Guild) {
+    await mongo.database
+        .collection("guilds")
+        .updateOne(
+            { guildID: guild.id },
+            {
+                $set: { active: true }, // Always do this
+
+                $setOnInsert: { // Only do this if the doc doesn't exist already
+                    guildID: guild.id,
+                    permittedToVerify: [],
+                    nsfwRole: "",
+                    accessRole: ""
+                }
+            },
+            { upsert: true }
+        );
+}
