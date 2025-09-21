@@ -31,7 +31,7 @@ const func = {
                 { memberID: member.id, guildID: member.guild.id },
                 {
                     $inc: { vcTotalTime: elapsedTime },
-                    $setOnInsert: defaultGuildMemberData(member!)
+                    $setOnInsert: await defaultGuildMemberData(member!)
                 },
                 { upsert: true }
             );

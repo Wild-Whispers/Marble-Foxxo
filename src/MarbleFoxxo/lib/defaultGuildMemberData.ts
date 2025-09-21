@@ -1,6 +1,8 @@
 import { GuildMember } from "discord.js";
 
-export function defaultGuildMemberData(member: GuildMember) {
+export async function defaultGuildMemberData(member: GuildMember) {
+    const user = await member.user.fetch();
+
     /**
      * Comment-out incrementable properties as their handlers get made.
      * For example, msgsSent has "incrementMessageCount" which will automatically add this property with a default value if it doesn't exist, and if it does, it will increment it
@@ -10,9 +12,9 @@ export function defaultGuildMemberData(member: GuildMember) {
         // Meta
         memberID: member.id,
         guildID: member.guild.id,
-        avatar: member.avatarURL(),
+        avatar: member.user.displayAvatarURL(),
         avatarDecor: member.avatarDecorationURL(),
-        banner: member.bannerURL(),
+        banner: user.bannerURL(),
         guildJoinTimestamp: Date.now(),
         /* lastJoinedVCTimestamp: null,
         lastLeftVCTimestamp: null, */

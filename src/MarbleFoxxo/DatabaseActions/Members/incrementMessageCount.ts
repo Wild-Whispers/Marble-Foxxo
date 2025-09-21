@@ -12,7 +12,7 @@ const func = {
                 { memberID: message.member?.id, guildID: message.guildId },
                 {
                     $inc: { msgsSent: 1 },
-                    $setOnInsert: defaultGuildMemberData(message.member!)
+                    $setOnInsert: await defaultGuildMemberData(message.member!)
                 },
                 { upsert: true }
             );

@@ -12,7 +12,7 @@ const func = {
                 { memberID: member.id, guildID: member.guild.id },
                 {
                     $set: { vcLongestSession: elapsedSessionTime },
-                    $setOnInsert: defaultGuildMemberData(member)
+                    $setOnInsert: await defaultGuildMemberData(member)
                 },
                 { upsert: true }
             );

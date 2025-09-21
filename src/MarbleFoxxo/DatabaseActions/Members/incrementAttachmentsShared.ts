@@ -14,7 +14,7 @@ const func = {
                 { memberID: message.member?.id, guildID: message.guildId },
                 {
                     $inc: { attachmentsShared: attachmentsCount },
-                    $setOnInsert: defaultGuildMemberData(message.member!)
+                    $setOnInsert: await defaultGuildMemberData(message.member!)
                 },
                 { upsert: true }
             );

@@ -12,7 +12,7 @@ const func = {
                 { memberID: member.id, guildID: guild.id },
                 {
                     $inc: { pollVotesCast: 1 },
-                    $setOnInsert: defaultGuildMemberData(member)
+                    $setOnInsert: await defaultGuildMemberData(member)
                 },
                 { upsert: true }
             );

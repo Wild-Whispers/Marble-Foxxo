@@ -1,0 +1,171 @@
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        margin: 0;
+        color: white;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .col {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #card {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        padding: 1em;
+        background: linear-gradient(to top right, #191a1b, #3a3a5c);
+        gap: 1em;
+    }
+
+    #top-section {
+        justify-content: center;
+        align-items: center;
+        padding: 1em;
+        gap: 2em;
+        background-color: #191a1b;
+        border-radius: 8px;
+    }
+
+    #bottom-section {
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 1em;
+        gap: 2em;
+        background-color: #191a1b;
+        border-radius: 8px;
+    }
+
+    avatar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 128px;
+        height: 128px;
+        background-color: #a7aaad;
+        border-radius: 500px;
+    }
+
+    #avatar-img {
+        border-radius: 500px;
+        width: 125px;
+        height: 125px
+    }
+    
+    #title-section {
+        gap: 0;
+    }
+
+    #title {
+        margin: 0;
+        font-size: 50px;
+    }
+
+    #subtitle {
+        margin: 0;
+        font-size: 30px;
+    }
+
+    #moderation-section, #stats-section {
+        gap: 1em;
+    }
+
+    .section-cols {
+        gap: 0.5em;
+    }
+
+    key, val {
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 3px;
+        font-size: 30px;
+        background-color: #303336;
+        border-radius: 5px;
+    }
+
+    key {
+        text-align: right;
+    }
+
+    val {
+        text-align: left;
+    }
+</style>
+
+<div id="card" class="col">
+    <span id="top-section" class="row">
+        <avatar class="row">
+            <img id="avatar-img" src="{{AVATAR_URL}}" />
+        </avatar>
+
+        <div id="title-section" class="col">
+            <h1 id="title">{{DISPLAY_NAME}}'s Server Stats</h1>
+            <h2 id="subtitle">Powered by Marble Foxxo Bot</h2>
+        </div>
+    </span>
+
+    <div id="bottom-section" class="row">
+
+        <div id="moderation-section" class="row">
+
+            <div class="col section-cols right">
+                <key>Times Muted:</key>
+                <key>Times Warned:</key>
+                <key>Times Kicked:</key>
+                <key>Times Banned:</key>
+                <key>Last Joined VC:</key>
+                <key>Last Left VC:</key>
+            </div>
+
+            <div class="col section-cols left">
+                <val>{{MUTED}}</val>
+                <val>{{WARNED}}</val>
+                <val>{{KICKED}}</val>
+                <val>{{BANNED}}</val>
+                <val>{{JOINED_VC}}</val>
+                <val>{{LEFT_VC}}</val>
+            </div>
+
+        </div>
+
+        <div id="stats-section" class="row">
+
+            <div class="col section-cols right">
+                <key>Msgs Sent:</key>
+                <key>Msgs Edited:</key>
+                <key>Total Time In VC:</key>
+                <key>Longest VC Session:</key>
+                <key>VC Joins:</key>
+                <key>Streaming Sessions Started:</key>
+                <key>Attachments Shared:</key>
+                <key>Poll Votes Cast:</key>
+            </div>
+
+            <div class="col section-cols left">
+                <val>{{MSGS_SENT}}</val>
+                <val>{{MSGS_EDITED}}</val>
+                <val>{{TIME_IN_VC}}</val>
+                <val>{{LONGEST_VC}}</val>
+                <val>{{VC_JOINS}}</val>
+                <val>{{STREAMING_SESSIONS}}</val>
+                <val>{{ATTACHMENTS_SHARED}}</val>
+                <val>{{POLL_VOTES}}</val>
+            </div>
+
+        </div>
+
+    </div>
+    
+</div>

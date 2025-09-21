@@ -13,7 +13,7 @@ const func = {
                 {
                     $set: { lastJoinedVCTimestamp: Date.now() },
                     $inc: { vcJoins: 1 },
-                    $setOnInsert: defaultGuildMemberData(member)
+                    $setOnInsert: await defaultGuildMemberData(member)
                 },
                 { upsert: true }
             );

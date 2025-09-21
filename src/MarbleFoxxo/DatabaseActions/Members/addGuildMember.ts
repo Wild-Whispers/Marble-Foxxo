@@ -8,7 +8,7 @@ const func = {
 
         await mongo.database
             .collection("guild-members")
-            .insertOne(defaultGuildMemberData(member));
+            .insertOne(await defaultGuildMemberData(member));
     }
 };
 
