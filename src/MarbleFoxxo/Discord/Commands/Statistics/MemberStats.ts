@@ -62,12 +62,23 @@ const command = {
             .replace("{{POLL_VOTES}}", stats.pollVotesCast ?? 0);
 
         // Build image embed
-        const browser = await puppeteer.launch({
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox"
-            ]
-        });
+        const isProd = process.env.MODE! === "production" ? true : false;
+        let browser = null;
+        
+        if (isProd) {
+            browser = await puppeteer.launch();
+        } else {
+            browser = await puppeteer.launch({
+                args: [
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--disable-gpu",
+                    "--no-zygote",
+                ]
+            });
+        }
+
         const page = await browser.newPage();
         await page.setViewport({ width: 1275, height: 1024 });
 
