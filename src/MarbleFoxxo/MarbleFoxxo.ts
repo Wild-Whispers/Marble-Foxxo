@@ -3,29 +3,44 @@ import {
     Collection,
     Events,
     GatewayIntentBits,
-    Guild,
+    GuildMember,
     Interaction,
+    Message,
     MessageFlags,
+    PartialMessage,
+    Partials,
+    PollAnswer,
     REST,
-    Routes
+    Routes,
+    VoiceState
 } from "discord.js";
 import dotenv from "dotenv";
 import { getMongo } from "@/lib/mongo";
 import path from "node:path";
 import { readdirSync } from "node:fs";
 import { pathToFileURL } from "node:url";
+import { Actions, initActions } from "./DatabaseActions/Actions";
 
 // Configure dotenv
 dotenv.config();
 
-// Configure mongo & redis
+// Configure mongo
 const mongo = getMongo();
 
 // Create client
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessagePolls
     ],
+    partials: [
+        Partials.Message,
+        Partials.Channel
+    ]
 }) as Client & { /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     commands: Collection<string, any>;
 };
@@ -35,7 +50,6 @@ const rest = new REST().setToken(process.env.MARBLE_FOXXO_SECRET!);
 // Register slash commands
 (async () => {
     client.commands = new Collection();
-
 
     const foldersPath = path.join(__dirname, "Discord", "Commands");
     const commandFolders = readdirSync(foldersPath);
@@ -77,11 +91,49 @@ client.once(Events.ClientReady, async readyClient => {
     // Log ready status
     console.info(`[${new Date().toISOString()}] Logged in as ${readyClient.user.tag}!`);
 
+    // Init database actions object
+    await initActions();
+
     // Add any guilds to database that aren't already there
     // This technically should never happen, but just in case
     for (const [, guild] of client.guilds.cache) {
-        await addNewGuildToDatabase(guild);
+        await Actions.addGuild(guild);
     }
+});
+
+client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
+    // Add guild member to database
+    await Actions.addGuildMember(member);
+});
+
+client.on(Events.MessagePollVoteAdd, async (pollAnswer: PollAnswer, userId: string) => {
+    const guild = pollAnswer.poll.message.guild;
+
+    if (!guild) return;
+
+    const member = await guild.members.fetch(userId).catch(() => null);
+
+    if (!member) return;
+
+    // Increment poll votes cast
+    await Actions.incrementPollVotesCast(guild, member);
+});
+
+client.on(Events.MessageCreate, async (message: Message) => {
+    if (message.author.bot) return;
+
+    // Cache
+    await Actions.cacheMessage(message);
+
+    // Increment message count for member
+    await Actions.incrementMessageCount(message);
+
+    // Increment attachments count if necessary
+    if (message.attachments.size > 0) await Actions.incrementAttachmentsShared(message);
+});
+
+client.on(Events.MessageDelete, async (message: Message | PartialMessage) => {
+    if (message.author?.bot) return;
 });
 
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {
@@ -119,21 +171,43 @@ client.on(Events.InteractionCreate, async (interaction: Interaction) => {
 client.on(Events.GuildCreate, async guild => {
     console.info(`[${new Date().toISOString()}] [Guild Added] ${guild.id} | ${guild.name}`);
 
-    await addNewGuildToDatabase(guild);
+    // Add guild
+    await Actions.addGuild(guild);
 });
 
 client.on(Events.GuildDelete, async guild => {
     console.info(`[${new Date().toISOString()}] [Guild Removed] ${guild.id} | ${guild.name}`);
 
-    await mongo.database
-        .collection("guilds")
-        .updateOne(
-            { guildID: guild.id },
-            {
-                $set: { active: false }
-            },
-            { upsert: false }
-        );
+    // Remove guild
+    Actions.removeGuild(guild);
+});
+
+client.on(Events.VoiceStateUpdate, async (oldState: VoiceState, newState: VoiceState) => {
+    // User joins voice channel
+    if (!oldState.channelId && newState.channelId) await Actions.setJoinedVCTimestamp(newState.member);
+
+    // User leaves voice channel
+    if (oldState.channelId && !newState.channelId) await Actions.setLeftVCTimestamp(oldState.member);
+
+    // User switches channels
+    if (oldState.channel && newState.channelId && oldState.channelId !== newState.channelId) {
+        // Nothing planned here yet
+    }
+
+    // User started streaming
+    if (!oldState.streaming && newState.streaming) {
+        const guild = newState.guild;
+        const member = newState.member;
+
+        if (!member) return;
+
+        await Actions.incrementStreamingSessionsStarted(guild, member);
+    }
+
+    // User stopped streaming
+    if (oldState.streaming && !newState.streaming) {
+        // Nothing planned here yet
+    }
 });
 
 process.on("SIGINT", async () => {
@@ -177,23 +251,3 @@ client.login(process.env.MARBLE_FOXXO_SECRET).catch((error: Error) => {
 
     console.error(`[${new Date().toISOString()}] [Bot Login Error]`, error);
 });
-
-// Helpers
-async function addNewGuildToDatabase(guild: Guild) {
-    await mongo.database
-        .collection("guilds")
-        .updateOne(
-            { guildID: guild.id },
-            {
-                $set: { active: true }, // Always do this
-
-                $setOnInsert: { // Only do this if the doc doesn't exist already
-                    guildID: guild.id,
-                    permittedToVerify: [],
-                    nsfwRole: "",
-                    accessRole: ""
-                }
-            },
-            { upsert: true }
-        );
-}
