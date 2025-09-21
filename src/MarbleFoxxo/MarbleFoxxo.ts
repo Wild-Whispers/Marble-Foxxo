@@ -136,6 +136,30 @@ client.on(Events.MessageDelete, async (message: Message | PartialMessage) => {
     if (message.author?.bot) return;
 });
 
+client.on(Events.MessageUpdate, async (oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage) => {
+    // Old message isn't cached
+    if (oldMessage.partial) {
+        console.log("Old message is partial");
+
+        return;
+    }
+
+    // New message isn't cached
+    if (newMessage.partial) {
+        console.log("New message is partial");
+
+        return;
+    }
+
+    // Increment edited messages
+    await Actions.incrementEditedMessages(newMessage as Message);
+
+    // Both are cached
+    if (!oldMessage.partial && !newMessage.partial) {
+        console.log("Message is not partial!")
+    }
+});
+
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
