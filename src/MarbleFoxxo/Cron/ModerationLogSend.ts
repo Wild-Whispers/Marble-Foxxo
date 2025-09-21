@@ -38,7 +38,7 @@ export default async function startBatchSendModerationLogs(client: Client) {
                 .setColor(Colors.Yellow)
                 .addFields(
                     { name: "Original Msg:", value: data.oldContent },
-                    { name: "New Message", value: data.newContent },
+                    { name: "New Message:", value: data.newContent },
                     { name: "Message Created:", value: new Date(parseInt(data.createdTimestamp)).toUTCString() },
                     { name: "Message Edited:", value: new Date(parseInt(data.editedTimestamp)).toUTCString() }
                 );
