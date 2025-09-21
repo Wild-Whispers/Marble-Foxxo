@@ -11,13 +11,13 @@ const func = {
         // Fetch original message from cache
         const cachedOldMsgRaw = await Actions.fetchCachedMessage(newMsg);
 
-        if (!cachedOldMsgRaw.content) {
-            console.info(`[${new Date().toISOString()}] [Cached Message] Message 'msg:${cachedOldMsgRaw.messageID}' was cached prior to edited messages cache implementation, its edit will not be cached.`);
+        const cachedOldMsg: CachedGuildMessage = { ...cachedOldMsgRaw };
+
+        if (!cachedOldMsg.content) {
+            console.info(`[${new Date().toISOString()}] [Cached Message] Message 'msg:${cachedOldMsg.messageID}' was cached prior to edited messages cache implementation, its edit will not be cached.`);
 
             return;
         }
-
-        const cachedOldMsg: CachedGuildMessage = { ...cachedOldMsgRaw };
 
         const key = `editedmsg:${newMsg.id}`;
         const data: CachedGuildEditedMessage = {
