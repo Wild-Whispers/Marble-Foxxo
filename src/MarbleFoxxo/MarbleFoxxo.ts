@@ -20,6 +20,7 @@ import path from "node:path";
 import { readdirSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { Actions, initActions } from "./DatabaseActions/Actions";
+import startBatchSendModerationLogs from "./Cron/ModerationLogSend";
 
 // Configure dotenv
 dotenv.config();
@@ -99,6 +100,9 @@ client.once(Events.ClientReady, async readyClient => {
     for (const [, guild] of client.guilds.cache) {
         await Actions.addGuild(guild);
     }
+
+    // Start moderation cron job
+    await startBatchSendModerationLogs(client);
 });
 
 client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
@@ -136,28 +140,21 @@ client.on(Events.MessageDelete, async (message: Message | PartialMessage) => {
     if (message.author?.bot) return;
 });
 
-client.on(Events.MessageUpdate, async (oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage) => {
-    // Old message isn't cached
-    if (oldMessage.partial) {
-        console.log("Old message is partial");
-
-        return;
-    }
-
-    // New message isn't cached
-    if (newMessage.partial) {
-        console.log("New message is partial");
-
-        return;
-    }
+client.on(Events.MessageUpdate, async (oldMsg: Message | PartialMessage, newMsg: Message | PartialMessage) => {
+    // Cache edited message
+    await Actions.cacheEditedMessage(oldMsg, newMsg as Message);
 
     // Increment edited messages
-    await Actions.incrementEditedMessages(newMessage as Message);
+    await Actions.incrementEditedMessages(newMsg as Message);
+
+    // Old message isn't cached
+    if (oldMsg.partial) {}
+
+    // New message isn't cached
+    if (newMsg.partial) {}
 
     // Both are cached
-    if (!oldMessage.partial && !newMessage.partial) {
-        console.log("Message is not partial!")
-    }
+    if (!oldMsg.partial && !newMsg.partial) {}
 });
 
 client.on(Events.InteractionCreate, async (interaction: Interaction) => {

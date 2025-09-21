@@ -3,5 +3,6 @@ export interface CachedGuildMessage {
     guildID: string,
     channelID: string,
     authorID: string,
+    content: string,
     [key: string]: string
 }

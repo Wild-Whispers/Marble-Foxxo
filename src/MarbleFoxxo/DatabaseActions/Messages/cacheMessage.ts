@@ -11,7 +11,8 @@ const func = {
             messageID: message.id,
             guildID: message.guildId!,
             channelID: message.channelId,
-            authorID: message.author.id
+            authorID: message.author.id,
+            content: message.content
         };
         
         await redis.hSet(key, data);

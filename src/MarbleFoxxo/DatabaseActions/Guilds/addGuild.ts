@@ -16,7 +16,8 @@ const func = {
                         guildID: guild.id,
                         permittedToVerify: [],
                         nsfwRole: "",
-                        accessRole: ""
+                        accessRole: "",
+                        moderationLogChannel: null
                     }
                 },
                 { upsert: true }
