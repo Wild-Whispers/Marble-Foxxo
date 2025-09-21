@@ -1,10 +1,12 @@
 import { CachedGuildEditedMessage } from "@/_Interfaces/CachedGuildEditedMessage";
+import { getMongo } from "@/lib/mongo";
 import { getRedis } from "@/lib/redis";
 import { Client, Colors, EmbedBuilder, TextChannel } from "discord.js";
 import cron from "node-cron";
 
 export default async function startBatchSendModerationLogs(client: Client) {
     const redis = await getRedis();
+    const mongo = getMongo();
 
     cron.schedule("* * * * *", async () => {
         // Get all edited messages
@@ -20,7 +22,13 @@ export default async function startBatchSendModerationLogs(client: Client) {
 
             if (!guild) continue;
 
-            const channel = await guild.channels.fetch(data.channelID);
+            const guildDataRaw = await mongo.database
+                .collection("guilds")
+                .findOne({ guildID: guild.id });
+
+            if (!guildDataRaw) continue;
+
+            const channel = await guild.channels.fetch(guildDataRaw.moderationLogChannel);
 
             if (!channel || !channel?.isTextBased()) continue;
 
