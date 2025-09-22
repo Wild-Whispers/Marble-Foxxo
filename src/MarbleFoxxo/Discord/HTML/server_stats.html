@@ -77,6 +77,11 @@
         font-size: 30px;
     }
 
+    #subsubtitle {
+        margin: 0;
+        font-size: 25px;
+    }
+
     #moderation-section, #stats-section {
         gap: 1em;
     }
@@ -111,8 +116,10 @@
         </avatar>
 
         <div id="title-section" class="col">
-            <h1 id="title">{{DISPLAY_NAME}}'s [SERVER] Stats</h1>
-            <h2 id="subtitle">Powered by Marble Foxxo Bot</h2>
+            <h1 id="title">[Guild Stats]</h1>
+            <h2 id="subtitle">{{DISPLAY_NAME}}'s Stats</h2>
+            <h2 id="subtitle">Owner: {{OWNER_NAME}}</h2>
+            <h3 id="subsubtitle">Powered by Marble Foxxo Bot</h3>
         </div>
     </span>
 
@@ -121,13 +128,47 @@
         <div id="stats-section" class="row">
 
             <div class="col section-cols right">
+                <key>Total Members:</key>
+                <key>Total Channels:</key>
+                <key>Booster Level:</key>
+                <key>Booster Count:</key>
+                <key>Longest Booster:</key>
+                <key>Text Channels:</key>
+                <key>Voice Channels:</key>
+                <key>Categories:</key>
                 <key>Msgs Sent:</key>
                 <key>Total VC Time:</key>
             </div>
 
             <div class="col section-cols left">
+                <val>{{TOTAL_MEMBERS}}</val>
+                <val>{{TOTAL_CHANNELS}}</val>
+                <val>{{BOOSTER_LEVEL}}</val>
+                <val>{{BOOSTER_COUNT}}</val>
+                <val>{{TOP_BOOSTER}}</val>
+                <val>{{TEXT_CHANNELS}}</val>
+                <val>{{VOICE_CHANNELS}}</val>
+                <val>{{CATEGORIES}}</val>
                 <val>{{MSGS_SENT}}</val>
                 <val>{{TIME_IN_VC}}</val>
+            </div>
+
+        </div>
+
+        <div id="stats-section" class="row">
+
+            <div class="col section-cols right">
+                <key>Custom Emojis:</key>
+                <key>Custom Stickers:</key>
+                <key>Total Roles:</key>
+                <key>Total Bots:</key>
+            </div>
+
+            <div class="col section-cols left">
+                <val>{{EMOJIS_COUNT}}</val>
+                <val>{{STICKERS_COUNT}}</val>
+                <val>{{ROLES_COUNT}}</val>
+                <val>{{BOTS_COUNT}}</val>
             </div>
 
         </div>
