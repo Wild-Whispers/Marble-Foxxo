@@ -24,7 +24,7 @@ const func = {
 
         const elapsedTime = lastLeftVC - lastJoinedVC;
 
-        // Update total VC time
+        // Update total VC time for the member
         await mongo.database
             .collection("guild-members")
             .findOneAndUpdate(
@@ -35,6 +35,9 @@ const func = {
                 },
                 { upsert: true }
             );
+
+        // Update total VC time for the guild
+        await Actions.incrementGuildTotalVCTime(member, elapsedTime);
 
         // Update VC longest session if necessary
         if (elapsedTime > guildMemberData.vcLongestSession) {
