@@ -132,6 +132,9 @@ client.on(Events.MessageCreate, async (message: Message) => {
     // Increment message count for member
     await Actions.incrementMessageCount(message);
 
+    // Increment guild total message count
+    await Actions.incrementTotalMessages(message.guild);
+
     // Increment attachments count if necessary
     if (message.attachments.size > 0) await Actions.incrementAttachmentsShared(message);
 });

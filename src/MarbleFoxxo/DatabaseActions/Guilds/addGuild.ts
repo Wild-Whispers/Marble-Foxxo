@@ -17,7 +17,9 @@ const func = {
                         permittedToVerify: [],
                         nsfwRole: "",
                         accessRole: "",
-                        moderationLogChannel: null
+                        moderationLogChannel: null,
+                        totalMessages: 0,
+                        vcTotalTime: 0
                     }
                 },
                 { upsert: true }

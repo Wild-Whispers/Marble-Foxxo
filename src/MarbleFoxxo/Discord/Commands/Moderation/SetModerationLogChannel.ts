@@ -22,6 +22,7 @@ const command = {
 
         console.log(channel.id, channel.name)
 
+        // Update moderation log channel
         await mongo.database
             .collection("guilds")
             .findOneAndUpdate(
