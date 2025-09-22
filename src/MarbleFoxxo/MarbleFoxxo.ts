@@ -16,11 +16,12 @@ import {
 } from "discord.js";
 import dotenv from "dotenv";
 import { getMongo } from "@/lib/mongo";
-import path from "node:path";
 import { readdirSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { Actions, initActions } from "./DatabaseActions/Actions";
 import startBatchSendModerationLogs from "./Cron/ModerationLogSend";
+import path from "node:path";
+import { fetchE6Media, scheduleFetchE6Media } from "./Cron/FetchE6Media";
 
 // Configure dotenv
 dotenv.config();
@@ -103,6 +104,10 @@ client.once(Events.ClientReady, async readyClient => {
 
     // Start moderation cron job
     await startBatchSendModerationLogs(client);
+
+    // Fetch e6 media initially and then schedule it
+    await fetchE6Media();
+    scheduleFetchE6Media();
 });
 
 client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
