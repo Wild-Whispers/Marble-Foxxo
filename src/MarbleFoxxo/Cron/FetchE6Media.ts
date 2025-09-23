@@ -11,7 +11,7 @@ export function scheduleFetchE6Media() {
 
 export async function fetchE6Media() {
     // Configure
-    const amountToFetchPer = 100;
+    const amountToFetchPer = 15;
 
     // Get manager
     const manager = new E621Manager("QuietWind01", process.env.E6_SECRET!);
@@ -19,8 +19,21 @@ export async function fetchE6Media() {
     // Fetch all
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const allPosts: any = [
-        ...await manager.fetchMultiple(["gay", "canine", "wolf", "anal"], amountToFetchPer),
+        // Gay
+        ...await manager.fetchMultiple(["gay"], amountToFetchPer),
+        ...await manager.fetchMultiple(["gay", "rating:s"], amountToFetchPer),
 
+        // Straight
+        ...await manager.fetchMultiple(["straight"], amountToFetchPer),
+        ...await manager.fetchMultiple(["straight", "rating:s"], amountToFetchPer),
+
+        // Male solo
+        ...await manager.fetchMultiple(["male", "solo"], amountToFetchPer),
+        ...await manager.fetchMultiple(["male", "solo", "rating:s"], amountToFetchPer),
+
+        // Female solo
+        ...await manager.fetchMultiple(["female", "solo"], amountToFetchPer),
+        ...await manager.fetchMultiple(["female", "solo", "rating:s"], amountToFetchPer),
     ];
 
     // Cache to Redis
