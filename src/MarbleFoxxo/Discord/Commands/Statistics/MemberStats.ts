@@ -1,4 +1,4 @@
-import { getMongo } from "@/lib/mongo";
+import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
 import { msToParts } from "@/MarbleFoxxo/lib/msToParts";
 import { AttachmentBuilder, ChatInputCommandInteraction, GuildMember, SlashCommandBuilder } from "discord.js";
 import { readFileSync } from "node:fs";
@@ -22,11 +22,8 @@ const command = {
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const member = interaction.options.getMember("user")! as GuildMember;
         const user = await member.user.fetch();
-        const mongo = getMongo();
 
-        const stats = await mongo.database
-            .collection("guild-members")
-            .findOne({ memberID: member.id, guildID: interaction.guildId });
+        const stats = await Actions.fetchGuildMember(member);
 
         if (!stats) {
             await interaction.reply({
@@ -46,6 +43,7 @@ const command = {
         html = html
             .replace("{{AVATAR_URL}}", stats.avatar)
             .replace("{{DISPLAY_NAME}}", user.displayName)
+            .replace("{{TOTAL_SHARDS}}", stats.totalShards ?? "?")
             .replace("{{MUTED}}", stats.timesMuted ?? 0)
             .replace("{{WARNED}}", stats.timesWarned ?? 0)
             .replace("{{KICKED}}", stats.timesKicked ?? 0)
