@@ -12,7 +12,10 @@ const func = {
                 { memberID: member.id, guildID: member.guild.id },
                 {
                     $inc: { totalShards: shardsToAdd },
-                    $setOnInsert: await defaultGuildMemberData(member)
+                    $setOnInsert: {
+                        ...await defaultGuildMemberData(member),
+                        totalShards: 50
+                    }
                 },
                 { upsert: true }
             );

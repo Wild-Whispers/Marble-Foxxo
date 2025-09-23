@@ -34,6 +34,6 @@ export async function defaultGuildMemberData(member: GuildMember) {
         streamingSessionsStarted: 0,
         attachmentsShared: 0,
         pollVotesCast: 0,
-        totalShards*/
+        totalShards: 50*/
     }
 }
