@@ -2,7 +2,7 @@ import cron from "node-cron";
 import { E621Manager } from "../e621/E621Manager";
 import { Actions } from "../DatabaseActions/Actions";
 
-export async function scheduleFetchE6Media() {
+export function scheduleFetchE6Media() {
     // Run every hour
     cron.schedule("0 * * * *", async () => {
         await fetchE6Media();

@@ -20,8 +20,6 @@ const command = {
         const channel = interaction.options.getChannel("channel", true);
         const mongo = getMongo();
 
-        console.log(channel.id, channel.name)
-
         // Update moderation log channel
         await mongo.database
             .collection("guilds")
