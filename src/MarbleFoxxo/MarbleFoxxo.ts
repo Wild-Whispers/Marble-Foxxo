@@ -149,6 +149,8 @@ client.on(Events.MessageDelete, async (message: Message | PartialMessage) => {
 });
 
 client.on(Events.MessageUpdate, async (oldMsg: Message | PartialMessage, newMsg: Message | PartialMessage) => {
+    if (oldMsg.author?.bot || newMsg.author?.bot) return;
+
     // Cache edited message
     await Actions.cacheEditedMessage(oldMsg, newMsg as Message);
 
