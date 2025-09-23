@@ -7,6 +7,27 @@ const func = {
     async cacheE6Media(json: any) {
         const redis = await getRedis();
 
+        // Early escape
+        if (
+            !json ||
+            !json.rating ||
+            !json.tags ||
+            !json.tags.general ||
+            !json.file ||
+            !json.file.md5 ||
+            !json.file.ext ||
+            !json.file.width ||
+            !json.file.height ||
+            !json.file.size ||
+            !json.file.url ||
+            !json.id ||
+            !json.created_at ||
+            !json.updated_at ||
+            !json.score ||
+            !json.score.total
+
+        ) return;
+
         // Calculate rating and sexual orientation of the post
         const rating = json.rating === "e" ? "NSFW" : "SFW";
         const generalTags = json.tags.general as Array<string>;
