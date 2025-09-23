@@ -16,6 +16,7 @@ export async function defaultGuildMemberData(member: GuildMember) {
         avatarDecor: member.avatarDecorationURL(),
         banner: user.bannerURL(),
         guildJoinTimestamp: Date.now(),
+        totalShards: 50,
         /* lastJoinedVCTimestamp: null,
         lastLeftVCTimestamp: null, */
 
@@ -33,7 +34,6 @@ export async function defaultGuildMemberData(member: GuildMember) {
         vcLongestSession: 0,
         streamingSessionsStarted: 0,
         attachmentsShared: 0,
-        pollVotesCast: 0,
-        totalShards: 50*/
+        pollVotesCast: 0*/
     }
 }
