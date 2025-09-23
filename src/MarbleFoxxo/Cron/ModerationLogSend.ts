@@ -29,12 +29,18 @@ export default async function startBatchSendModerationLogs(client: Client) {
             if (!guildDataRaw) continue;
 
             const channel = await guild.channels.fetch(guildDataRaw.moderationLogChannel);
+            const messageChannel = await guild.channels.fetch(data.channelID);
 
-            if (!channel || !channel?.isTextBased()) continue;
+            if (
+                !channel ||
+                !channel?.isTextBased() ||
+                !messageChannel ||
+                !messageChannel.isTextBased()
+            ) continue;
 
             const embed = new EmbedBuilder()
                 .setTitle("📋 Edited Messages Log")
-                .setDescription(`Message sent by <@${data.authorID}> edited in <#${channel.id}>:`)
+                .setDescription(`Message sent by <@${data.authorID}> edited in <#${data.channelID}>:`)
                 .setColor(Colors.Yellow)
                 .addFields(
                     { name: "Original Msg:", value: data.oldContent },
