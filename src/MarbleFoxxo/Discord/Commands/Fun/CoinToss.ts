@@ -101,12 +101,14 @@ const command = {
                 Colors.Green,
                 `attachment://heads.png`,
                 [
+                    { name: "Your Bet:", value: playerBet.toString() },
+                    { name: "Computer's Bet:", value: computerBet.toString() },
                     { name: "Shards Before:", value: memberDataRaw.totalShards.toString() },
-                    { name: "Shards After:", value: (memberDataRaw.totalShards + computerBet).toString() }
+                    { name: "Shards After:", value: (memberDataRaw.totalShards + computerBet + playerBet).toString() }
                 ]
             );
 
-            await Actions.incrementShards(interaction.member, computerBet);
+            await Actions.incrementShards(interaction.member, computerBet + playerBet);
 
             await interaction.editReply({ embeds: [win], files: [headsFile] });
 
@@ -121,12 +123,14 @@ const command = {
                 Colors.Green,
                 `attachment://tails.png`,
                 [
+                    { name: "Your Bet:", value: playerBet.toString() },
+                    { name: "Computer's Bet:", value: computerBet.toString() },
                     { name: "Shards Before:", value: memberDataRaw.totalShards.toString() },
-                    { name: "Shards After:", value: (memberDataRaw.totalShards + computerBet).toString() }
+                    { name: "Shards After:", value: (memberDataRaw.totalShards + computerBet + playerBet).toString() }
                 ]
             );
 
-            await Actions.incrementShards(interaction.member, computerBet);
+            await Actions.incrementShards(interaction.member, computerBet + playerBet);
 
             await interaction.editReply({ embeds: [win], files: [tailsFile] });
 
@@ -141,6 +145,8 @@ const command = {
                 Colors.Red,
                 `attachment://heads.png`,
                 [
+                    { name: "Your Bet:", value: playerBet.toString() },
+                    { name: "Computer's Bet:", value: computerBet.toString() },
                     { name: "Shards Before:", value: memberDataRaw.totalShards.toString() },
                     { name: "Shards After:", value: (memberDataRaw.totalShards - playerBet).toString() }
                 ]
@@ -161,6 +167,8 @@ const command = {
                 Colors.Red,
                 `attachment://tails.png`,
                 [
+                    { name: "Your Bet:", value: playerBet.toString() },
+                    { name: "Computer's Bet:", value: computerBet.toString() },
                     { name: "Shards Before:", value: memberDataRaw.totalShards.toString() },
                     { name: "Shards After:", value: (memberDataRaw.totalShards - playerBet).toString() }
                 ]
