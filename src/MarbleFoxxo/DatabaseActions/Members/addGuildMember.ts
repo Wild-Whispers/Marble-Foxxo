@@ -8,7 +8,10 @@ const func = {
 
         await mongo.database
             .collection("guild-members")
-            .insertOne(await defaultGuildMemberData(member));
+            .insertOne({
+                ...await defaultGuildMemberData(member),
+                totalShards: 50
+            });
     }
 };
 
