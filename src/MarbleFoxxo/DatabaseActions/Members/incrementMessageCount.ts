@@ -1,5 +1,4 @@
 import { getMongo } from "@/lib/mongo";
-import { defaultGuildMemberData } from "@/MarbleFoxxo/lib/defaultGuildMemberData";
 import { Message } from "discord.js";
 
 const func = {
@@ -9,20 +8,34 @@ const func = {
         const member = message.member!;
         const user = await member.user;
 
+        // Define shards per message
+        const shardsPerMessage = 2;
+
         await mongo.database
             .collection("guild-members")
             .findOneAndUpdate(
                 { memberID: message.member?.id, guildID: message.guildId },
-                {
-                    $inc: { msgsSent: 1 },
-                    $setOnInsert: {
-                        ...await defaultGuildMemberData(member),
-                        avatar: member.user.displayAvatarURL(),
-                        avatarDecor: member.avatarDecorationURL(),
-                        banner: user.bannerURL(),
-                        totalShards: 50
-                    }
-                },
+                [
+                    {
+                        $set: {
+                        // always increment msgsSent
+                        msgsSent: { $add: ["$msgsSent", 1] },
+
+                        // if totalShards exists, increment it
+                        // else seed it with 50 and then add increment
+                        totalShards: {
+                            $add: [
+                            { $ifNull: ["$totalShards", 50] },
+                            shardsPerMessage
+                            ]
+                        },
+
+                        avatar: { $ifNull: ["$avatar", user.displayAvatarURL()] },
+                        avatarDecor: { $ifNull: ["$avatarDecor", member.avatarDecorationURL()] },
+                        banner: { $ifNull: ["$banner", user.bannerURL()] },
+                        },
+                    },
+                ],
                 { upsert: true }
             );
     }
