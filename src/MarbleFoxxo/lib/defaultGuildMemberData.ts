@@ -33,6 +33,7 @@ export async function defaultGuildMemberData(member: GuildMember) {
         vcLongestSession: 0,
         streamingSessionsStarted: 0,
         attachmentsShared: 0,
-        pollVotesCast: 0*/
+        pollVotesCast: 0,
+        totalShards*/
     }
 }
