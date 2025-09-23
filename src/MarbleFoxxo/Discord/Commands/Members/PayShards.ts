@@ -90,7 +90,7 @@ const command = {
         // Else, pay the shards
         await Actions.payShards(interaction.member, recipient, amount);
 
-        const shard = new AttachmentBuilder(path.join(__dirname, "..", "Fun", "fun_assets", "coins", "shard.png"), { name: "shard.png" });
+        const shard = new AttachmentBuilder(path.join(__dirname, "..", "Fun", "fun_assets", "shard.png"), { name: "shard.png" });
 
         const error = await MediaEmbed(
             "✅ You successfully made a payment!",

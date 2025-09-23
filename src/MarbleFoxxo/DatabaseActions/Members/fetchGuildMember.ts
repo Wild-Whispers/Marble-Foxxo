@@ -16,6 +16,7 @@ const func = {
                         avatar: member.user.displayAvatarURL(),
                         avatarDecor: member.avatarDecorationURL(),
                         banner: member.user.bannerURL(),
+                        totalShards: 50
                     }
                 },
                 {
