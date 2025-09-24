@@ -1,5 +1,5 @@
 import { getMongo } from "@/lib/mongo";
-import { msToParts } from "@/MarbleFoxxo/lib/msToParts";
+import { msToParts } from "@/MarbleFoxxo/lib/helpers/msToParts";
 import { AttachmentBuilder, ChannelType, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { readFileSync } from "node:fs";
 import path from "node:path";

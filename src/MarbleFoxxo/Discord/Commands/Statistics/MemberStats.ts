@@ -1,5 +1,5 @@
 import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { msToParts } from "@/MarbleFoxxo/lib/msToParts";
+import { msToParts } from "@/MarbleFoxxo/lib/helpers/msToParts";
 import { AttachmentBuilder, ChatInputCommandInteraction, GuildMember, SlashCommandBuilder } from "discord.js";
 import { readFileSync } from "node:fs";
 import path from "node:path";
