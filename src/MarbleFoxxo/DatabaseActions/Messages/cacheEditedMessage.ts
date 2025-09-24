@@ -13,12 +13,6 @@ const func = {
 
         const cachedOldMsg: CachedGuildMessage = { ...cachedOldMsgRaw };
 
-        if (!cachedOldMsg || !cachedOldMsg.content) {
-            console.info(`[${new Date().toISOString()}] [Cached Message] Message 'msg:${cachedOldMsg.messageID}' was cached prior to edited messages cache implementation, its edit will not be cached.`);
-
-            return;
-        }
-
         const key = `editedmsg:${newMsg.id}`;
         const data: CachedGuildEditedMessage = {
             messageID: newMsg.id,
@@ -28,7 +22,7 @@ const func = {
             createdTimestamp: newMsg.createdTimestamp?.toString() ?? "unknown",
             editedTimestamp: newMsg.editedTimestamp?.toString() ?? "unknown",
             oldContent: cachedOldMsg.content,
-            newContent: newMsg.content
+            newContent: newMsg.content ?? "NOTICE: Message was cached prior to content being collected with messages cache. This message's content is unknown."
         };
         
         await redis.hSet(key, data);

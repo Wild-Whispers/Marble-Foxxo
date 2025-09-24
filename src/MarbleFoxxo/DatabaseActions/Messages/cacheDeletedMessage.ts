@@ -13,12 +13,6 @@ const func = {
 
         const cachedOldMsg: CachedGuildMessage = { ...cachedOldMsgRaw };
 
-        if (!cachedOldMsg || !cachedOldMsg.content) {
-            console.info(`[${new Date().toISOString()}] [Cached Message] Message 'msg:${cachedOldMsg.messageID}' was cached prior to edited messages cache implementation, its deletion will not be cached.`);
-
-            return;
-        }
-
         const key = `deletedmsg:${message.id}`;
         const data: CachedGuildDeletedMessage = {
             authorID: cachedOldMsg.authorID,
@@ -26,7 +20,7 @@ const func = {
             channelID: cachedOldMsg.channelID,
             createdTimestamp: message.createdTimestamp?.toString() ?? "unknown",
             editedTimestamp: message.editedTimestamp?.toString() ?? "unknown",
-            content: cachedOldMsg.content
+            content: cachedOldMsg.content ?? "NOTICE: Message was cached prior to content being collected with messages cache. This message's content is unknown."
         };
 
         console.log("Caching deleted message")
