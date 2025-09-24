@@ -39,6 +39,10 @@ export default async function startBatchSendModerationLogs(client: Client) {
                 !messageChannel.isTextBased()
             ) continue;
 
+            // Get message link
+            let messageLink: string = "";
+            if (data.messageID) messageLink = `https://discord.com/channels/${data.guildID}/${data.channelID}/${data.messageID ?? ""}`;
+
             // Get author
             const author = await guild.members.fetch(data.authorID);
 
@@ -50,7 +54,8 @@ export default async function startBatchSendModerationLogs(client: Client) {
                     { name: "Original Msg:", value: data.oldContent },
                     { name: "New Message:", value: data.newContent },
                     { name: "Message Created:", value: new Date(parseInt(data.createdTimestamp)).toUTCString() },
-                    { name: "Message Edited:", value: new Date(parseInt(data.editedTimestamp)).toUTCString() }
+                    { name: "Message Edited:", value: new Date(parseInt(data.editedTimestamp)).toUTCString() },
+                    { name: "Message Link:", value: `[Click here to view message](${messageLink})` }
                 );
 
             // Send the embed to the channel
