@@ -21,6 +21,7 @@ const func = {
 
         const key = `editedmsg:${newMsg.id}`;
         const data: CachedGuildEditedMessage = {
+            messageID: newMsg.id,
             authorID: cachedOldMsg.authorID,
             guildID: cachedOldMsg.guildID,
             channelID: cachedOldMsg.channelID,

@@ -1,4 +1,5 @@
 export interface CachedGuildEditedMessage {
+    messageID: string,
     authorID: string,
     guildID: string,
     channelID: string,
