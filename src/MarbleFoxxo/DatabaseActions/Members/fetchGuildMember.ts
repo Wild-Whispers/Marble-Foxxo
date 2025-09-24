@@ -10,15 +10,21 @@ const func = {
             .collection("guild-members")
             .findOneAndUpdate(
                 { memberID: member.id, guildID: member.guild.id },
-                {
-                    $setOnInsert: await defaultGuildMemberData(member),
-                    $set: {
-                        avatar: member.user.displayAvatarURL(),
-                        avatarDecor: member.avatarDecorationURL(),
-                        banner: member.user.bannerURL(),
-                        totalShards: 50
+                [
+                    {
+                        $set: {
+                            avatar: member.user.displayAvatarURL(),
+                            avatarDecor: member.avatarDecorationURL(),
+                            banner: member.user.bannerURL(),
+
+                            // If totalShards is missing, set it to 50
+                            totalShards: { $ifNull: ["$totalShards", 50] },
+
+                            // spread your defaults only if it's a new doc
+                            ...await defaultGuildMemberData(member)
+                        }
                     }
-                },
+                ],
                 {
                     upsert: true,
                     returnDocument: "after"

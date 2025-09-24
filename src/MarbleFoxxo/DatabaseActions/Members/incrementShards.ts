@@ -6,14 +6,29 @@ const func = {
     async incrementShards(member: GuildMember, shardsToAdd: number) {
         const mongo = getMongo();
 
+        const user = await member.user.fetch();
+
         await mongo.database
             .collection("guild-members")
             .findOneAndUpdate(
                 { memberID: member.id, guildID: member.guild.id },
-                {
-                    $inc: { totalShards: shardsToAdd },
-                    $setOnInsert: await defaultGuildMemberData(member)
-                },
+                [
+                    {
+                        $set: {
+                        totalShards: {
+                            $add: [
+                            { $ifNull: ["$totalShards", 50] }, // if missing, treat as 50
+                            shardsToAdd
+                            ]
+                        },
+                        // copy over other fields only on insert
+                        ...await defaultGuildMemberData(member),
+                        avatar: member.user.displayAvatarURL(),
+                        avatarDecor: member.avatarDecorationURL(),
+                        banner: user.bannerURL()
+                        }
+                    }
+                ],
                 { upsert: true }
             );
     }

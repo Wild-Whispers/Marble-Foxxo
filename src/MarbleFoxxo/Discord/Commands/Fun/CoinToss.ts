@@ -34,7 +34,7 @@ const command = {
         const memberDataRaw = await Actions.fetchGuildMember(interaction.member);
 
         // Member not found
-        if (!memberDataRaw || !memberDataRaw.totalShards) {
+        if (!memberDataRaw || !memberDataRaw.totalShards === null || !memberDataRaw.totalShards === undefined) {
             const error = await ErrorEmbed(
                 "❌ Member record not found!",
                 "Guild member not found in database. Please try again, or contact an administrator."
