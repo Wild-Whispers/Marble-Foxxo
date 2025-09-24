@@ -1,6 +1,7 @@
 import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
 import { ChatInputCommandInteraction, Colors, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import isMemberEligibleForLvlUp from "@/MarbleFoxxo/lib/helpers/isMemberEligibleForLvlUp";
+import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 
 const name = "lvl-up";
 const description = "Level up!";
@@ -29,9 +30,17 @@ const command = {
 
         // Escape if not eligible
         if (!eligible) {
-            if (process.env.MODE === "development") {
-                console.debug(`[${new Date().toISOString()}] [Dev Debug] User attempted to level up, but was not eligible.\n Total Messages: ${totalMessages}/${requiredTotalMessages} \n Total Shards: ${totalShards}/${requiredTotalShards}`);
-            }
+            // User is eligible, create embed
+            const error = await ErrorEmbed(
+                "Uh-oh!",
+                "You aren't eligible to level up!",
+                [
+                    { name: `Messages:`, value: `Required: ${requiredTotalMessages} / Current: ${totalMessages}` },
+                    { name: "Shards:", value: `Required: ⟠${requiredTotalShards} / Current: ⟠${totalShards}` }
+                ]
+            );
+        
+            await interaction.editReply({ embeds: [error] });
 
             return;
         }
