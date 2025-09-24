@@ -39,9 +39,12 @@ export default async function startBatchSendModerationLogs(client: Client) {
                 !messageChannel.isTextBased()
             ) continue;
 
+            // Get author
+            const author = await guild.members.fetch(data.authorID);
+
             const embed = new EmbedBuilder()
                 .setTitle("📋 Edited Messages Log")
-                .setDescription(`Message sent by <@${data.authorID}> edited in <#${data.channelID}>:`)
+                .setDescription(`Message sent by ${author.displayName} edited in <#${data.channelID}>:`)
                 .setColor(Colors.Yellow)
                 .addFields(
                     { name: "Original Msg:", value: data.oldContent },
@@ -86,9 +89,12 @@ export default async function startBatchSendModerationLogs(client: Client) {
                 !messageChannel.isTextBased()
             ) continue;
 
+            // Get author
+            const author = await guild.members.fetch(data.authorID);
+
             const embed = new EmbedBuilder()
                 .setTitle("📋 Edited Messages Log")
-                .setDescription(`Message sent by <@${data.authorID}> deleted in <#${data.channelID}>:`)
+                .setDescription(`Message sent by ${author.displayName} deleted in <#${data.channelID}>:`)
                 .setColor(Colors.Yellow)
                 .addFields(
                     { name: "Original Msg:", value: data.content },
