@@ -14,7 +14,7 @@ export default async function MessageLeveling(message: Message) {
 
     // Define levels
     const currentLvl = memberData.lvl ?? 0; // If `lvl` isn't set, that means they're level 0 anyway
-    const totalMessages = memberData.totalMessages ?? 1; // If `totalMsgs` isn't set, that means they have no messages anyway and this would be their first
+    const totalMessages = memberData.msgsSent ?? 1; // If `totalMsgs` isn't set, that means they have no messages anyway and this would be their first
     const totalShards = memberData.totalShards ?? 50; // If `totalShards` isn't set, that means they have no messages anyway and this would be their first
 
     // Check if the user can level up
@@ -40,14 +40,14 @@ export default async function MessageLeveling(message: Message) {
 
     // User is eligible, create embed
     const embed = new EmbedBuilder()
-            .setColor(Colors.DarkPurple)
-            .setTitle(`Congrats, ${message.member?.displayName}!`)
-            .setDescription(`You are eligible to level up to Lvl.${currentLvl + 1}!`)
-            .addFields([
-                { name: "Run:", value: "`/lvlup`"},
-                { name: "Total Msgs:", value: `${totalMessages}/${requiredTotalMessages}`},
-                { name: "Total Shards:", value: `${totalShards}/${requiredTotalShards}`}
-            ]);
+        .setColor(Colors.DarkPurple)
+        .setTitle(`Congrats, ${message.member?.displayName}!`)
+        .setDescription(`You are eligible to level up to Lvl.${currentLvl + 1}!`)
+        .addFields([
+            { name: "Run:", value: "`/lvl-up`"},
+            { name: "Total Msgs:", value: `${totalMessages}/${requiredTotalMessages}`},
+            { name: "Total Shards:", value: `⟠${totalShards}/⟠${requiredTotalShards}`}
+        ]);
 
     await message.reply({ embeds: [embed] });
 

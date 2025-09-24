@@ -44,6 +44,7 @@ const command = {
             .replace("{{AVATAR_URL}}", stats.avatar)
             .replace("{{DISPLAY_NAME}}", user.displayName)
             .replace("{{TOTAL_SHARDS}}", stats.totalShards ?? "?")
+            .replace("{{USER_LVL}}", stats.lvl ?? "?")
             .replace("{{MUTED}}", stats.timesMuted ?? 0)
             .replace("{{WARNED}}", stats.timesWarned ?? 0)
             .replace("{{KICKED}}", stats.timesKicked ?? 0)

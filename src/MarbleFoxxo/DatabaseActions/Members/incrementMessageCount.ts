@@ -26,7 +26,10 @@ const func = {
             if (len >= 4000) shardsToAward = shardsPer1000Chars * 4; // Nitro limit
         }
 
-        await mongo.database
+        console.log("Shards to award:", shardsToAward);
+
+
+        const memberData = await mongo.database
             .collection("guild-members")
             .findOneAndUpdate(
                 { memberID: message.member?.id, guildID: message.guildId },
@@ -34,7 +37,7 @@ const func = {
                     {
                         $set: {
                         // Always increment msgsSent
-                        msgsSent: { $add: ["$msgsSent", 1] },
+                        msgsSent: { $add: [ { $ifNull: ["$msgsSent", 0] }, 1 ] },
 
                         // If totalShards exists, increment it
                         // Else seed it with 50 and then add increment
@@ -51,8 +54,11 @@ const func = {
                         },
                     },
                 ],
-                { upsert: true }
+                { upsert: true, returnDocument: "after" }
             );
+
+        console.log("member data:", memberData);
+        return memberData;
     }
 };
 
