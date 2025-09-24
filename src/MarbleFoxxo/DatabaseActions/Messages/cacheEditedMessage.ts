@@ -13,7 +13,7 @@ const func = {
 
         const cachedOldMsg: CachedGuildMessage = { ...cachedOldMsgRaw };
 
-        if (!cachedOldMsg.content) {
+        if (!cachedOldMsg || !cachedOldMsg.content) {
             console.info(`[${new Date().toISOString()}] [Cached Message] Message 'msg:${cachedOldMsg.messageID}' was cached prior to edited messages cache implementation, its edit will not be cached.`);
 
             return;
@@ -21,11 +21,11 @@ const func = {
 
         const key = `editedmsg:${newMsg.id}`;
         const data: CachedGuildEditedMessage = {
-            authorID: newMsg.author.id,
-            guildID: newMsg.guildId!,
-            channelID: newMsg.channelId,
-            createdTimestamp: newMsg.createdTimestamp.toString(),
-            editedTimestamp: newMsg.editedTimestamp!.toString(),
+            authorID: cachedOldMsg.authorID,
+            guildID: cachedOldMsg.guildID,
+            channelID: cachedOldMsg.channelID,
+            createdTimestamp: newMsg.createdTimestamp?.toString() ?? "unknown",
+            editedTimestamp: newMsg.editedTimestamp?.toString() ?? "unknown",
             oldContent: cachedOldMsg.content,
             newContent: newMsg.content
         };
