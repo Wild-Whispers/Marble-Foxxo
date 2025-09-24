@@ -103,10 +103,10 @@ client.once(Events.ClientReady, async readyClient => {
     }
 
     // Start moderation cron job
-    await startBatchSendModerationLogs(client);
+    startBatchSendModerationLogs(client);
 
     // Fetch e6 media initially and then schedule it
-    await fetchE6Media();
+    fetchE6Media();
     scheduleFetchE6Media();
 });
 
@@ -146,6 +146,9 @@ client.on(Events.MessageCreate, async (message: Message) => {
 
 client.on(Events.MessageDelete, async (message: Message | PartialMessage) => {
     if (message.author?.bot) return;
+
+    // Cache deleted message
+    await Actions.cacheDeletedMessage(message);
 });
 
 client.on(Events.MessageUpdate, async (oldMsg: Message | PartialMessage, newMsg: Message | PartialMessage) => {
