@@ -22,6 +22,7 @@ import { Actions, initActions } from "./DatabaseActions/Actions";
 import startBatchSendModerationLogs from "./Cron/ModerationLogSend";
 import path from "node:path";
 import { fetchE6Media, scheduleFetchE6Media } from "./Cron/FetchE6Media";
+import MessageLeveling from "./lib/handlers/MessageLeveling";
 
 // Configure dotenv
 dotenv.config();
@@ -142,6 +143,9 @@ client.on(Events.MessageCreate, async (message: Message) => {
 
     // Increment attachments count if necessary
     if (message.attachments.size > 0) await Actions.incrementAttachmentsShared(message);
+
+    // DO LAST: Handle leveling up
+    await MessageLeveling(message);
 });
 
 client.on(Events.MessageDelete, async (message: Message | PartialMessage) => {
