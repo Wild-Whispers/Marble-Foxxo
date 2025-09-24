@@ -46,7 +46,7 @@ const command = {
         }
 
         // Increment user lvl
-        memberData = await Actions.incrementLvl(member, requiredTotalShards);
+        memberData = await Actions.incrementLvl(member, -requiredTotalShards);
 
         if (!memberData) return;
 
