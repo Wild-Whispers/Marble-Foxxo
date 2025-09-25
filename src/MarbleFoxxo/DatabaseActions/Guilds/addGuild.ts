@@ -10,7 +10,7 @@ const func = {
             .updateOne(
                 { guildID: guild.id },
                 {
-                    $set: { active: true }, // Always do this
+                    $set: { active: true },
 
                     $setOnInsert: { // Only do this if the doc doesn't exist already
                         guildID: guild.id,

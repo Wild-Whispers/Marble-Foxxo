@@ -57,7 +57,6 @@ const func = {
                 { upsert: true, returnDocument: "after" }
             );
 
-        console.log("member data:", memberData);
         return memberData;
     }
 };

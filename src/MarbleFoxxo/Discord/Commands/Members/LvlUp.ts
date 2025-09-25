@@ -57,13 +57,26 @@ const command = {
         // Calculate requirements for next level
         const { eligible: nextEligible, requiredTotalMessages: nextRequiredTotalMessages, requiredTotalShards: nextRequiredTotalShards } = isMemberEligibleForLvlUp(newCurrentLvl, newTotalMessages, newTotalShards)
 
+        // If available lvl role, assign that as well
+        const lvlRole = await Actions.fetchLvlRole(interaction.guild, newCurrentLvl);
+
+        let roleToAdd = null;
+        if (lvlRole && lvlRole.roleID) {
+            // Add the role to the member
+            await member?.roles.add(lvlRole.roleID);
+
+            // Set role to add
+            roleToAdd = await interaction.guild?.roles.fetch(lvlRole.roleID);
+        }
+
         // User is eligible, create embed
         const embed = new EmbedBuilder()
             .setColor(Colors.DarkPurple)
             .setTitle(`Congrats, ${member?.displayName}!`)
-            .setDescription("You've leveled up!")
+            .setDescription("You've leveled up!\n\n Keep in mind, some levels progress you via server roles as well! If you progressed via server roles as well, the role you were assigned will be shown below! :)")
             .addFields([
                 { name: "Lvl:", value: `${currentLvl}->${newCurrentLvl}`},
+                { name: "Server role assigned?", value: (lvlRole && lvlRole.roleID) ? `Yes: ${roleToAdd}` : "This level doesn't assign a role" },
                 { name: "Shards Spent:", value: `⟠${requiredTotalShards}`},
                 { name: `Msgs to Lvl.${newCurrentLvl + 1}:`, value: `Required: ${nextRequiredTotalMessages} / Current: ${newTotalMessages}` },
                 { name: "Shards Required:", value: `Required: ⟠${nextRequiredTotalShards} / Current: ⟠${newTotalShards}` },
