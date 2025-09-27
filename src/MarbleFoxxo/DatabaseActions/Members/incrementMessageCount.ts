@@ -26,8 +26,6 @@ const func = {
             if (len >= 4000) shardsToAward = shardsPer1000Chars * 4; // Nitro limit
         }
 
-        console.log("Shards to award:", shardsToAward);
-
 
         const memberData = await mongo.database
             .collection("guild-members")
