@@ -7,6 +7,7 @@ import {
     Interaction,
     Message,
     MessageFlags,
+    PartialGuildMember,
     PartialMessage,
     Partials,
     PollAnswer,
@@ -23,6 +24,7 @@ import startBatchSendModerationLogs from "./Cron/ModerationLogSend";
 import path from "node:path";
 import { fetchE6Media, scheduleFetchE6Media } from "./Cron/FetchE6Media";
 import MessageLeveling from "./lib/handlers/MessageLeveling";
+import MemberJoinLeave from "./lib/handlers/MemberJoinLeave";
 
 // Configure dotenv
 dotenv.config();
@@ -218,6 +220,14 @@ client.on(Events.GuildDelete, async guild => {
 
     // Remove guild
     Actions.removeGuild(guild);
+});
+
+client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
+    await MemberJoinLeave(member, true);
+});
+
+client.on(Events.GuildMemberRemove, async (member: GuildMember | PartialGuildMember) => {
+    await MemberJoinLeave(member, false);
 });
 
 client.on(Events.VoiceStateUpdate, async (oldState: VoiceState, newState: VoiceState) => {
