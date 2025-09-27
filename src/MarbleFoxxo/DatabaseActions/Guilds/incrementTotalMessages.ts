@@ -5,14 +5,14 @@ const func = {
     async incrementTotalMessages(guild: Guild) {
         const mongo = getMongo();
 
-        await mongo.database
+        return await mongo.database
             .collection("guilds")
             .findOneAndUpdate(
                 { guildID: guild.id },
                 {
                     $inc: { totalMessages: 1 },
                 },
-                { upsert: true }
+                { upsert: true, returnDocument: "after" }
             );
     }
 };
