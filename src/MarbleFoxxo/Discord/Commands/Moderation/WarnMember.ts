@@ -2,11 +2,11 @@ import { HasModPermissionResult, memberHasModPermission } from "@/MarbleFoxxo/li
 import { AttachmentBuilder, ChatInputCommandInteraction, Colors, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import path from "node:path";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
+import path from "node:path";
 
-const name = "ban";
-const description = "Ban a server member.";
+const name = "warn";
+const description = "warn a server member.";
 
 const command = {
     data: new SlashCommandBuilder()
@@ -15,13 +15,13 @@ const command = {
         .addUserOption(option =>
             option
                 .setName("user")
-                .setDescription("The user to ban.")
+                .setDescription("The user to warn.")
                 .setRequired(true)
         )
         .addStringOption(option =>
             option
                 .setName("reason")
-                .setDescription("The reason for the ban. Leave blank for 'No Reason Given'.")
+                .setDescription("The reason for the warn. Leave blank for 'No Reason Given'.")
                 .setRequired(false)
         ),
             
@@ -43,12 +43,12 @@ const command = {
             return;
         }
 
-        // Get user to ban
-        const userToBan = interaction.options.getUser("user", true);
-        if (!userToBan) {
+        // Get user to warn
+        const userToWarn = interaction.options.getUser("user", true);
+        if (!userToWarn) {
             const error = await ErrorEmbed(
                 `❌ Unable to find specified user!`,
-                `Specified user: ${userToBan}`
+                `Specified user: ${userToWarn}`
             );
 
             await interaction.editReply({ embeds: [error] });
@@ -56,12 +56,12 @@ const command = {
             return;
         }
 
-        // Get member to ban from user to ban
-        const memberToBan = await interaction.guild?.members.fetch(userToBan.id);
-        if (!memberToBan) {
+        // Get member to warn from user to warn
+        const memberToWarn = await interaction.guild?.members.fetch(userToWarn.id);
+        if (!memberToWarn) {
             const error = await ErrorEmbed(
                 `❌ Unable to find specified member!`,
-                `Specified member: ${memberToBan}`
+                `Specified member: ${memberToWarn}`
             );
 
             await interaction.editReply({ embeds: [error] });
@@ -72,24 +72,23 @@ const command = {
         // Parse reason given
         const reasonGiven = interaction.options.getString("reason", false) ?? "No Reason Given";
 
-        // Ban member
-        await memberToBan.ban({ reason: `Applied by ${interaction.user.displayName}: ${reasonGiven}` });
-        await Actions.banMember(memberToBan, reasonGiven ?? null);
-                
+        // Warn member
+        await Actions.warnMember(memberToWarn, reasonGiven ?? null);
+
         // Send DM to member
         const iconFile = new AttachmentBuilder(path.join(__dirname, "..", "..", "the_marble_grove.png"), { name: "the_marble_grove.png" });
-        const banEmbed = await MediaEmbed(
-            `You've been banned from ${interaction.guild?.name}!`,
+        const warnEmbed = await MediaEmbed(
+            `You've been given a warning in ${interaction.guild?.name}!`,
             `Applied by ${interaction.user.displayName}: ${reasonGiven}`,
             Colors.Orange,
             `attachment://the_marble_grove.png`
         );
-        await memberToBan.send({ embeds: [banEmbed], files: [iconFile] });
+        await memberToWarn.send({ embeds: [warnEmbed], files: [iconFile] });
 
         // Send success message
         const embed = await new EmbedBuilder()
-            .setTitle(`✅ Member banned!`)
-            .setDescription(`${memberToBan.displayName} has been banned successfully!`)
+            .setTitle(`✅ Member warned!`)
+            .setDescription(`${memberToWarn.displayName} has been warned successfully!`)
             .addFields([
                 { name: "Reason:", value: reasonGiven}
             ]);

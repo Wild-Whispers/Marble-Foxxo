@@ -1,7 +1,9 @@
 import { HasModPermissionResult, memberHasModPermission } from "@/MarbleFoxxo/lib/helpers/memberHasModPermission";
-import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, Colors, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
+import path from "node:path";
+import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
 
 const name = "mute";
 const description = "Mute a server member.";
@@ -86,9 +88,24 @@ const command = {
         // Parse reason given
         const reasonGiven = interaction.options.getString("reason", false) ?? "No Reason Given";
 
-        // Timeout member
+        // Mute member
         await memberToMute.timeout(durationInMilliseconds, `Applied by ${interaction.user.displayName}: ${reasonGiven}`);
         await Actions.muteMember(memberToMute, durationInMilliseconds, reasonGiven ?? null);
+        
+        // Send DM to member
+        const iconFile = new AttachmentBuilder(path.join(__dirname, "..", "..", "the_marble_grove.png"), { name: "the_marble_grove.png" });
+        const muteEmbed = await MediaEmbed(
+            `You've been muted in ${interaction.guild?.name}!`,
+            `Applied by ${interaction.user.displayName}: ${reasonGiven}`,
+            Colors.Orange,
+            `attachment://the_marble_grove.png`,
+            [
+                { name: "Duration in Seconds:", value: `${durationInSeconds}s`},
+                { name: "Duration in Minutes:", value: `${durationInMinutes}m`},
+                { name: "Duration in Days:", value: `${durationInDays}d`},
+            ]
+        );
+        await memberToMute.send({ embeds: [muteEmbed], files: [iconFile] });
 
         // Send success message
         const embed = await new EmbedBuilder()

@@ -1,7 +1,9 @@
 import { HasModPermissionResult, memberHasModPermission } from "@/MarbleFoxxo/lib/helpers/memberHasModPermission";
-import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, Colors, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
+import path from "node:path";
+import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
 
 const name = "kick";
 const description = "Kick a server member.";
@@ -70,13 +72,23 @@ const command = {
         // Parse reason given
         const reasonGiven = interaction.options.getString("reason", false) ?? "No Reason Given";
 
-        // Timeout member
+        // Kick member
         await memberToKick.kick(`Applied by ${interaction.user.displayName}: ${reasonGiven}`);
         await Actions.kickMember(memberToKick, reasonGiven ?? null);
+        
+        // Send DM to member
+        const iconFile = new AttachmentBuilder(path.join(__dirname, "..", "..", "the_marble_grove.png"), { name: "the_marble_grove.png" });
+        const kickEmbed = await MediaEmbed(
+            `You've been kicked from ${interaction.guild?.name}!`,
+            `Applied by ${interaction.user.displayName}: ${reasonGiven}`,
+            Colors.Orange,
+            `attachment://the_marble_grove.png`
+        );
+        await memberToKick.send({ embeds: [kickEmbed], files: [iconFile] });
 
         // Send success message
         const embed = await new EmbedBuilder()
-            .setTitle(`✅ Member kicked out!`)
+            .setTitle(`✅ Member kicked!`)
             .setDescription(`${memberToKick.displayName} has been kicked successfully!`)
             .addFields([
                 { name: "Reason:", value: reasonGiven}
