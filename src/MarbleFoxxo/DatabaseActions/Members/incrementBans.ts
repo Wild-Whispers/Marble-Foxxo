@@ -14,6 +14,7 @@ const func = {
                     $inc: {
                         timesBanned: 1
                     },
+                    $set: { isBanned: true },
                     $setOnInsert: {
                         ...await defaultGuildMemberData(member),
                         avatar: member.user.displayAvatarURL(),
