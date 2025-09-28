@@ -87,10 +87,6 @@ const command = {
 
         // Parse reason given
         const reasonGiven = interaction.options.getString("reason", false) ?? "No Reason Given";
-
-        // Mute member
-        await memberToMute.timeout(durationInMilliseconds, `Applied by ${interaction.user.displayName}: ${reasonGiven}`);
-        await Actions.muteMember(memberToMute, durationInMilliseconds, reasonGiven ?? null);
         
         // Send DM to member
         const iconFile = new AttachmentBuilder(path.join(__dirname, "..", "..", "the_marble_grove.png"), { name: "the_marble_grove.png" });
@@ -106,6 +102,10 @@ const command = {
             ]
         );
         await memberToMute.send({ embeds: [muteEmbed], files: [iconFile] });
+
+        // Mute member
+        await memberToMute.timeout(durationInMilliseconds, `Applied by ${interaction.user.displayName}: ${reasonGiven}`);
+        await Actions.muteMember(memberToMute, durationInMilliseconds, reasonGiven ?? null);
 
         // Send success message
         const embed = await new EmbedBuilder()

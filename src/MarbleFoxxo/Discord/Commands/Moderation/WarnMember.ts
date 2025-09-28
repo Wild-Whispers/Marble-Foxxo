@@ -72,9 +72,6 @@ const command = {
         // Parse reason given
         const reasonGiven = interaction.options.getString("reason", false) ?? "No Reason Given";
 
-        // Warn member
-        await Actions.warnMember(memberToWarn, reasonGiven ?? null);
-
         // Send DM to member
         const iconFile = new AttachmentBuilder(path.join(__dirname, "..", "..", "the_marble_grove.png"), { name: "the_marble_grove.png" });
         const warnEmbed = await MediaEmbed(
@@ -84,6 +81,9 @@ const command = {
             `attachment://the_marble_grove.png`
         );
         await memberToWarn.send({ embeds: [warnEmbed], files: [iconFile] });
+
+        // Warn member
+        await Actions.warnMember(memberToWarn, reasonGiven ?? null);
 
         // Send success message
         const embed = await new EmbedBuilder()

@@ -71,10 +71,6 @@ const command = {
 
         // Parse reason given
         const reasonGiven = interaction.options.getString("reason", false) ?? "No Reason Given";
-
-        // Ban member
-        await memberToBan.ban({ reason: `Applied by ${interaction.user.displayName}: ${reasonGiven}` });
-        await Actions.banMember(memberToBan, reasonGiven ?? null);
                 
         // Send DM to member
         const iconFile = new AttachmentBuilder(path.join(__dirname, "..", "..", "the_marble_grove.png"), { name: "the_marble_grove.png" });
@@ -85,6 +81,10 @@ const command = {
             `attachment://the_marble_grove.png`
         );
         await memberToBan.send({ embeds: [banEmbed], files: [iconFile] });
+
+        // Ban member
+        await memberToBan.ban({ reason: `Applied by ${interaction.user.displayName}: ${reasonGiven}` });
+        await Actions.banMember(memberToBan, reasonGiven ?? null);
 
         // Send success message
         const embed = await new EmbedBuilder()
