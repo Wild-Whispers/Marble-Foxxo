@@ -25,7 +25,7 @@ const command = {
         .addStringOption(option =>
             option
                 .setName("reason")
-                .setDescription("The user reason for the mute. Leave blank for 'No Reason Given'.")
+                .setDescription("The reason for the mute. Leave blank for 'No Reason Given'.")
                 .setRequired(false)
         ),
             
