@@ -4,7 +4,7 @@ import { GuildMember } from "discord.js";
 import { Actions } from "../Actions";
 
 const func = {
-    async banMember(member: GuildMember, duration: number, reason?: string) {
+    async banMember(member: GuildMember, reason?: string) {
         const mongo = getMongo();
 
         await mongo.database
@@ -13,7 +13,7 @@ const func = {
                 userID: member.user.id,
                 guildID: member.guild.id,
                 type: ModerationActions.BAN,
-                durationInSeconds: duration,
+                durationInSeconds: "N/A",
                 reason: reason ?? "No reason given"
             });
 
