@@ -19,7 +19,7 @@ const command = {
         .addIntegerOption(option =>
             option
                 .setName("duration")
-                .setDescription("Duration (in seconds) to mute the member. Use -1 for permanent mute.")
+                .setDescription("Duration (in seconds) to mute the member. Use -1 for a maximum mute (28 days).")
                 .setRequired(true)
         )
         .addStringOption(option =>
