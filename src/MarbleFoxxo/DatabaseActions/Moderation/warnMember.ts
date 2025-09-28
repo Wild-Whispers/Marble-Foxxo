@@ -4,7 +4,7 @@ import { GuildMember } from "discord.js";
 import { Actions } from "../Actions";
 
 const func = {
-    async warnMember(member: GuildMember, reason?: string) {
+    async warnMember(member: GuildMember, duration: number, reason?: string) {
         const mongo = getMongo();
 
         await mongo.database
@@ -13,6 +13,7 @@ const func = {
                 userID: member.user.id,
                 guildID: member.guild.id,
                 type: ModerationActions.WARN,
+                durationInSeconds: duration,
                 reason: reason ?? "No reason given"
             });
 
