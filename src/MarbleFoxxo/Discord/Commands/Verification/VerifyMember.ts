@@ -1,4 +1,4 @@
-import { getMongo } from "@/lib/mongo";
+import { HasModPermissionResult, memberHasModPermission } from "@/MarbleFoxxo/lib/helpers/memberHasModPermission";
 import { ChatInputCommandInteraction, GuildMember, MessageFlags, SlashCommandBuilder } from "discord.js";
 
 const name = "verify";
@@ -34,18 +34,14 @@ const command = {
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const subcommand = interaction.options.getSubcommand();
         const member = interaction.options.getMember("member")! as GuildMember;
-        const mongo = getMongo();
-        const [guildData] = await mongo.database
-            .collection("guilds")
-            .find({ guildID: interaction.guildId })
-            .toArray();
-        const permittedRoles = guildData.permittedToVerify;
-        const executingMember = interaction.member! as GuildMember;
-        const hasPermittedRole = executingMember.roles.cache.some(role => permittedRoles.includes(role.id));
 
-        if (!hasPermittedRole) {
+        // Check if member has moderation permissions
+        const executingMember = interaction.member! as GuildMember;
+        const { hasPermission, message: hasPermissionMsg, guildData }: HasModPermissionResult = await memberHasModPermission(executingMember);
+
+        if (!hasPermission || !guildData) {
             await interaction.reply({
-                content: `❌ You don't have permission to use this command.`,
+                content: hasPermissionMsg,
                 flags: MessageFlags.Ephemeral
             });
 
