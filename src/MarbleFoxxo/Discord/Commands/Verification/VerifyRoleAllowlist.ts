@@ -1,8 +1,8 @@
 import { getMongo } from "@/lib/mongo";
 import { ChatInputCommandInteraction, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 
-const name = "add-verify-role";
-const description = "Add a role that is able to verify your members.";
+const name = "add-mod-role";
+const description = "Add a role that is able to verify and moderate your members.";
 
 const command = {
     data: new SlashCommandBuilder()
@@ -12,11 +12,11 @@ const command = {
         .addSubcommand(subcommand => 
             subcommand
                 .setName("add")
-                .setDescription("Add a role to the verify allowlist.")
+                .setDescription("Add a role to the moderation allowlist.")
                 .addRoleOption(option =>
                     option
                         .setName("role")
-                        .setDescription("The role of the role that can verify members.")
+                        .setDescription("The role that can verify and moderate your members.")
                         .setRequired(true)
                 )
         )
@@ -27,7 +27,7 @@ const command = {
                 .addRoleOption(option =>
                     option
                         .setName("role")
-                        .setDescription("The role of the role that can no longer verify members.")
+                        .setDescription("The role that can no longer verify or moderate your members.")
                         .setRequired(true)
                 )
         ),
