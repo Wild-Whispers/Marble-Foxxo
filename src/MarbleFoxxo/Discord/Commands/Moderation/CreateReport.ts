@@ -1,8 +1,9 @@
 import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { AttachmentBuilder, ChannelType, ChatInputCommandInteraction, Colors, MessageFlags, SlashCommandBuilder, ThreadAutoArchiveDuration } from "discord.js";
+import { AttachmentBuilder, ChannelType, ChatInputCommandInteraction, Colors, Message, MessageFlags, SlashCommandBuilder, ThreadAutoArchiveDuration } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
 import path from "node:path";
+import { listenToThread } from "@/MarbleFoxxo/MarbleFoxxo";
 
 const name = "create-report";
 const description = "Set the channel where member join logs are sent.";
@@ -102,7 +103,7 @@ const command = {
 
                 const embed = await MediaEmbed(
                     `Report Thread #${guildData.reportsCount}`,
-                    `Please enter the thread and explain any/all relevant details related to your report. A staff member will be with you shortly.`,
+                    `Please enter the thread and explain any/all relevant details related to your report. A staff member will be with you shortly.\n\nTranscript will only records messages for 3 days after thread creation.`,
                     Colors.Green,
                     `attachment://the_marble_grove.png`,
                     roleFields
@@ -110,6 +111,16 @@ const command = {
 
                 // Send to the thread
                 await thread.send({ embeds: [embed] });
+
+                // Finally attach the listener to it
+                const stopListening = await listenToThread(thread, async (msg: Message) => {
+                    await Actions.appendReportMessage(interaction.guild, thread, msg);
+                });
+
+                // Stop listening after a period
+                setTimeout(() => {
+                    stopListening();
+                }, 1000 * 60 * 60 * 24 * 3 /* 3 days */);
             }
         } catch (err: any) { /* eslint-disable-line @typescript-eslint/no-explicit-any */
             console.error(`[${new Date().toISOString()}] [Reports Thread Error]`, err);

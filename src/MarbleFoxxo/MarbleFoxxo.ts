@@ -11,6 +11,8 @@ import {
     PartialMessage,
     Partials,
     PollAnswer,
+    PrivateThreadChannel,
+    PublicThreadChannel,
     REST,
     Routes,
     VoiceState
@@ -299,3 +301,14 @@ client.login(process.env.MARBLE_FOXXO_SECRET).catch((error: Error) => {
 
     console.error(`[${new Date().toISOString()}] [Bot Login Error]`, error);
 });
+
+export function listenToThread(thread: PrivateThreadChannel | PublicThreadChannel<false>, callback: (msg: Message) => void) {
+    const handler = (msg: Message) => {
+        if (msg.channel.id === thread.id) callback(msg);
+    };
+
+    // Attach listener
+    client.on(Events.MessageCreate, handler);
+
+    return () => client.off(Events.MessageCreate, handler);
+}
