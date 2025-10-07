@@ -6,7 +6,7 @@ const func = {
     async pausePrompts(member: GuildMember) {
         const mongo = getMongo();
 
-        const pauseTimeInMilliseconds = 10 * 60 * 1000; // 10 minutes
+        const pauseTimeInMilliseconds = 60 * 60 * 1000; // 60 minutes / 1 hour
         const promptsPausedUntil = Date.now() + pauseTimeInMilliseconds;
 
         //console.log(member.id, member.guild.id)
