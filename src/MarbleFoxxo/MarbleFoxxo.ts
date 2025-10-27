@@ -1,6 +1,9 @@
 import {
+    AttachmentBuilder,
+    AuditLogEvent,
     Client,
     Collection,
+    Colors,
     Events,
     GatewayIntentBits,
     GuildMember,
@@ -27,6 +30,7 @@ import path from "node:path";
 import { fetchE6Media, scheduleFetchE6Media } from "./Cron/FetchE6Media";
 import MessageLeveling from "./lib/handlers/MessageLeveling";
 import MemberJoinLeave from "./lib/handlers/MemberJoinLeave";
+import MediaEmbed from "./Discord/EmbedWrappers/MediaEmbed";
 
 // Configure dotenv
 dotenv.config();
@@ -215,6 +219,37 @@ client.on(Events.GuildCreate, async guild => {
 
     // Add guild
     await Actions.addGuild(guild);
+
+    // Send welcome/setup message
+    let inviteUser = null;
+    try {
+        // Attempt to find inviting user
+        const auditLogs = await guild.fetchAuditLogs({
+            type: AuditLogEvent.BotAdd,
+            limit: 1
+        });
+
+        const entry = auditLogs.entries.find((e) => e.target?.id === client.user?.id);
+        inviteUser = entry?.executor ?? null;
+
+        if (!inviteUser) {
+            throw new Error("Could not find a valid bot invite in the audit logs to send welcome message!");
+        }
+
+        // Send welcome embed
+        const iconFile = new AttachmentBuilder(path.join(__dirname, "the_marble_grove.png"), { name: "the_marble_grove.png" });
+        const embed = await MediaEmbed(
+            `Thank you for choosing Marble Foxxo!`,
+            `Thank you for choosing Marble Foxxo for your server!\n\nPlease link your Discord account to access your management interface: https://discord.com/oauth2/authorize?client_id=1390546028226412544&response_type=code&redirect_uri=https%3A%2F%2Fmarblefoxxo.wildwhispers.xyz%2Fapi%2Fauth%2Fcallback&scope=identify+guilds+email\n\nNeed help? Join our Discord server! https://discord.gg/FabRvm7AF4`,
+            Colors.Gold,
+            `attachment://the_marble_grove.png`
+        );
+        await inviteUser.send({ embeds: [embed], files: [iconFile] });
+
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    } catch (error: any) {
+        console.error(`[${new Date().toISOString()}] [Guild Error] Could not send welcome message on guild add for guild ${guild.id}:`, error);
+    }
 });
 
 client.on(Events.GuildDelete, async guild => {
