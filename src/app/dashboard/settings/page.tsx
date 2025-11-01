@@ -1,15 +1,13 @@
 "use client";
 
 import Col from "@/components/Col";
-import UpdateChannelsForm from "@/components/Forms/UpdateChannelsForm";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorMessage from "@/components/Messages/ErrorMessage";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function DashboardGuildChannels() {
+export default function DashboardGuildSettings() {
     const searchParams = useSearchParams();
-    const [channels, setChannels] = useState<Array<any> | null>(null); /* eslint-disable-line @typescript-eslint/no-explicit-any */
     const [guildData, setGuildData] = useState<any | null>(null); /* eslint-disable-line @typescript-eslint/no-explicit-any */
     const [DBGuildData, setDBGuildData] = useState<any | null>(null); /* eslint-disable-line @typescript-eslint/no-explicit-any */
     const [error, setError] = useState<string | null>(null);
@@ -27,14 +25,6 @@ export default function DashboardGuildChannels() {
                     .then((res) => {
                         if (res.error) setError(res.error);
                         else setGuildData(res.data);
-                    });
-
-                // Fetch guild's channels
-                fetch(`/api/discord/guild/${guildID}/channels`)
-                    .then(res => res.json())
-                    .then((res) => {
-                        if (res.error) setError(res.error);
-                        else setChannels(res.data.filter((channel: any) => channel.type === 0)); /* eslint-disable-line @typescript-eslint/no-explicit-any */
                     });
 
                 // Fetch the guild from DB
@@ -55,14 +45,13 @@ export default function DashboardGuildChannels() {
 
     return (
         <Col id="dashboard-channels" classes="gap-2">
-            <h1 className="flex flex-row items-center text-2xl font-semibold gap-2">Channels - {!guildData ? <LoadingSpinner size={20} thickness={2} /> : guildData.name}</h1>
+            <h1 className="flex flex-row items-center text-2xl font-semibold gap-2">Guild Settings - {!guildData ? <LoadingSpinner size={20} thickness={2} /> : guildData.name}</h1>
 
             {
                 !guildID ||
-                !DBGuildData ||
-                !channels ?
+                !DBGuildData ?
                 <LoadingSpinner size={16} thickness={2}/> :
-                <UpdateChannelsForm guildID={guildID} guildData={DBGuildData} channels={channels} />
+                "Reminder to self: Write page content here"
             }
         </Col>
     );

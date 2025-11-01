@@ -13,7 +13,7 @@ export default async function Dashboard() {
 
     try {
         // Try to parse user data
-        if (!userDataRaw) throw new Error("No user found!");
+        if (!userDataRaw) throw new Error("User not found!");
 
         const userData = JSON.parse(userDataRaw);
 
