@@ -24,11 +24,13 @@ export async function GET(req: Request) {
                 client_secret: process.env.MARBLE_FOXXO_SECRET!,
                 grant_type: "authorization_code",
                 code,
-                redirect_uri: "https://marblefoxxo.wildwhispers.xyz/api/auth/callback",
+                redirect_uri: process.env.NODE_ENV === "development" ? "http://localhost:3000/api/auth/callback" : "https://marblefoxxo.wildwhispers.xyz/api/auth/callback",
             }),
         });
 
         const tokenData = await tokenRes.json();
+
+        if (process.env.NODE_ENV === "development") console.log("Discord Response:", tokenData);
 
         if (!tokenRes.ok) {
             console.error("Discord token exchange failed:", tokenData);
@@ -51,13 +53,9 @@ export async function GET(req: Request) {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
 
-        // Fetch user guilds
-        const guildsRes = await fetch("https://discord.com/api/users/@me/guilds", {
-            headers: { Authorization: `Bearer ${accessToken}` },
-        });
-
         const userData = await userRes.json();
-        const userGuilds = await guildsRes.json();
+
+        if (process.env.NODE_ENV === "development") console.log("User Data:", userData);
 
         // Store access token & user
         const response = NextResponse.redirect(new URL("/dashboard", req.url));
@@ -78,18 +76,8 @@ export async function GET(req: Request) {
             path: "/",
         });
 
-        response.cookies.set("discord_user_guilds", JSON.stringify(userGuilds), {
-            httpOnly: false,
-            secure: true,
-            sameSite: "lax",
-            maxAge: 3600,
-            path: "/",
-        });
-
         return response;
-
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    } catch (error: any) {
+    } catch (error: any) { /* eslint-disable-line @typescript-eslint/no-explicit-any */
         console.error("OAuth callback error:", error);
 
         return NextResponse.json(
