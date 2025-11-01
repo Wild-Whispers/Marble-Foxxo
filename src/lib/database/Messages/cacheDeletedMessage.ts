@@ -1,16 +1,16 @@
 import { getRedis } from "@/lib/redis";
 import { Message, PartialMessage } from "discord.js";
-import { Actions } from "../Actions";
 import { CachedGuildMessage } from "@/_Interfaces/CachedGuildMessage";
 import { CachedGuildDeletedMessage } from "@/_Interfaces/CachedGuildDeletedMessage";
+import { fetchCachedMessage } from "./fetchCachedMessage";
 
 export async function cacheDeletedMessage(message: Message | PartialMessage) {
     const redis = await getRedis();
 
     // Fetch original message from cache
-    const cachedOldMsgRaw = await Actions.fetchCachedMessage(message);
+    const cachedOldMsgRaw = await fetchCachedMessage(message as Message);
 
-    const cachedOldMsg: CachedGuildMessage = { ...cachedOldMsgRaw };
+    const cachedOldMsg = { ...cachedOldMsgRaw } as CachedGuildMessage;
 
     const key = `deletedmsg:${message.id}`;
     const data: CachedGuildDeletedMessage = {

@@ -1,7 +1,7 @@
 import { getMongo } from "@/lib/mongo";
 import { defaultGuildMemberData } from "@/MarbleFoxxo/lib/defaultGuildMemberData";
-import { Actions } from "../Actions";
 import { GuildMember } from "discord.js";
+import { updateVCTime } from "./updateVCTime";
 
 export async function setLeftVCTimestamp(member: GuildMember) {
     const mongo = getMongo();
@@ -19,5 +19,5 @@ export async function setLeftVCTimestamp(member: GuildMember) {
         );
 
     // Update VC time
-    await Actions.updateVCTime(member);
+    await updateVCTime(member);
 }

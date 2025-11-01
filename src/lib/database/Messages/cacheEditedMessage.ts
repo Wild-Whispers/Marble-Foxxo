@@ -1,16 +1,16 @@
 import { CachedGuildEditedMessage } from "@/_Interfaces/CachedGuildEditedMessage";
 import { getRedis } from "@/lib/redis";
 import { Message, PartialMessage } from "discord.js";
-import { Actions } from "../Actions";
 import { CachedGuildMessage } from "@/_Interfaces/CachedGuildMessage";
+import { fetchCachedMessage } from "./fetchCachedMessage";
 
 export async function cacheEditedMessage(oldMsg: Message | PartialMessage, newMsg: Message) {
     const redis = await getRedis();
 
     // Fetch original message from cache
-    const cachedOldMsgRaw = await Actions.fetchCachedMessage(newMsg);
+    const cachedOldMsgRaw = await fetchCachedMessage(newMsg as Message);
 
-    const cachedOldMsg: CachedGuildMessage = { ...cachedOldMsgRaw };
+    const cachedOldMsg = { ...cachedOldMsgRaw } as CachedGuildMessage;
 
     const key = `editedmsg:${newMsg.id}`;
     const data: CachedGuildEditedMessage = {

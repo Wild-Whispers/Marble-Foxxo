@@ -1,7 +1,7 @@
 import { ModerationActions } from "@/_Enums/ModerationActions";
 import { getMongo } from "@/lib/mongo";
 import { GuildMember } from "discord.js";
-import { Actions } from "../Actions";
+import { incrementKicks } from "../Members/incrementKicks";
 
 export async function kickMember(member: GuildMember, reason?: string) {
     const mongo = getMongo();
@@ -16,5 +16,5 @@ export async function kickMember(member: GuildMember, reason?: string) {
             reason: reason ?? "No reason given"
         });
 
-    return await Actions.incrementKicks(member);
+    return await incrementKicks(member);
 }
