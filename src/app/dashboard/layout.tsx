@@ -44,7 +44,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     // Construct nav links
     const navLinks = [
         { href: "/dashboard", label: "My Overview", icon: <ShieldExclamationIcon width={20} height={20} /> },
-        { href: `/dashboard/channels`, label: "Channels", icon: <HashtagIcon width={20} height={20} /> },
+        { href: `/dashboard/channels?guild=${guilds[0].id}`, label: "Channels", icon: <HashtagIcon width={20} height={20} /> },
     ];
 
     return (

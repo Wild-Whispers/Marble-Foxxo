@@ -3,7 +3,7 @@ import ErrorMessage from "@/components/Messages/ErrorMessage";
 import { fetchGuildByID } from "@/lib/database/Guilds/fetchGuildByID";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export default async function DashboardChannels({searchParams }: { searchParams: any }) {
+export default async function DashboardChannels({ searchParams }: { searchParams: any }) {
     const guildID = (await searchParams).guild;
 
     try {
