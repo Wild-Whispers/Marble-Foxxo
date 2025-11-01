@@ -1,9 +1,9 @@
 import { HasModPermissionResult, memberHasModPermission } from "@/MarbleFoxxo/lib/helpers/memberHasModPermission";
 import { AttachmentBuilder, ChatInputCommandInteraction, Colors, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
 import path from "node:path";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
+import { banMember } from "@/lib/database/Moderation/banMember";
 
 const name = "ban";
 const description = "Ban a server member.";
@@ -84,7 +84,7 @@ const command = {
 
         // Ban member
         await memberToBan.ban({ reason: `Applied by ${interaction.user.displayName}: ${reasonGiven}` });
-        await Actions.banMember(memberToBan, reasonGiven ?? null);
+        await banMember(memberToBan, reasonGiven ?? null);
 
         // Send success message
         const embed = await new EmbedBuilder()

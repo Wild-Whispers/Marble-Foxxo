@@ -1,6 +1,7 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { Colors, EmbedBuilder, Message } from "discord.js";
+import { Colors, EmbedBuilder, GuildMember, Message } from "discord.js";
 import isMemberEligibleForLvlUp from "../helpers/isMemberEligibleForLvlUp";
+import { fetchGuildMember } from "@/lib/database/Members/fetchGuildMember";
+import { pausePrompts } from "@/lib/database/Members/pausePrompts";
 
 export default async function MessageLeveling(message: Message) {
     if (!message || !message.content) return;
@@ -8,7 +9,7 @@ export default async function MessageLeveling(message: Message) {
     // Don't bother if message is less than specified length
     if (message.content.length < 3) return;
 
-    const memberData = await Actions.fetchGuildMember(message.member);
+    const memberData = await fetchGuildMember(message.member as GuildMember);
 
     if (!memberData) return;
 
@@ -52,5 +53,5 @@ export default async function MessageLeveling(message: Message) {
     await message.reply({ embeds: [embed] });
 
     // Don't bug the user repeatedly. Wait a while.
-    await Actions.pausePrompts(message.member);
+    await pausePrompts(message.member as GuildMember);
 }

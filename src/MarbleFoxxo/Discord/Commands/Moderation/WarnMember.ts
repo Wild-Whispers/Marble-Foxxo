@@ -1,9 +1,9 @@
 import { HasModPermissionResult, memberHasModPermission } from "@/MarbleFoxxo/lib/helpers/memberHasModPermission";
 import { AttachmentBuilder, ChatInputCommandInteraction, Colors, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
 import path from "node:path";
+import { warnMember } from "@/lib/database/Moderation/warnMember";
 
 const name = "warn";
 const description = "warn a server member.";
@@ -83,7 +83,7 @@ const command = {
         await memberToWarn.send({ embeds: [warnEmbed], files: [iconFile] });
 
         // Warn member
-        await Actions.warnMember(memberToWarn, reasonGiven ?? null);
+        await warnMember(memberToWarn, reasonGiven ?? null);
 
         // Send success message
         const embed = await new EmbedBuilder()

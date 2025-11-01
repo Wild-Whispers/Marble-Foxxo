@@ -1,5 +1,5 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { ChatInputCommandInteraction, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { setMemberJoinLogChannel } from "@/lib/database/Moderation/setMemberJoinLogChannel";
+import { ChatInputCommandInteraction, Guild, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 
 const name = "set-member-join-channel";
 const description = "Set the channel where member join logs are sent.";
@@ -20,7 +20,7 @@ const command = {
         const channel = interaction.options.getChannel("channel", true);
 
         // Update moderation log channel
-        await Actions.setMemberJoinLogChannel(interaction.guild, channel.id);
+        await setMemberJoinLogChannel(interaction.guild as Guild, channel.id);
         
         await interaction.reply({
             content: `✅ Set <#${channel.id}> as the member join log channel.`,

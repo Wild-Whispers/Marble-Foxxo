@@ -1,0 +1,45 @@
+import { getMongo } from "@/lib/mongo";
+import { defaultGuildMemberData } from "@/MarbleFoxxo/lib/defaultGuildMemberData";
+import { GuildMember } from "discord.js";
+import { Actions } from "../Actions";
+
+export async function updateVCTime(member: GuildMember) {
+    const mongo = getMongo();
+
+    const guildMemberData = await mongo.database
+        .collection("guild-members")
+        .findOne({ memberID: member.id, guildID: member.guild.id });
+
+    if (!guildMemberData) {
+        await Actions.addGuildMember(member);
+
+        return;
+    }
+
+    const lastJoinedVC = guildMemberData.lastJoinedVCTimestamp ?? null;
+    const lastLeftVC = guildMemberData.lastLeftVCTimestamp ?? null;
+
+    if (!lastJoinedVC || !lastLeftVC) return;
+
+    const elapsedTime = lastLeftVC - lastJoinedVC;
+
+    // Update total VC time for the member
+    await mongo.database
+        .collection("guild-members")
+        .findOneAndUpdate(
+            { memberID: member.id, guildID: member.guild.id },
+            {
+                $inc: { vcTotalTime: elapsedTime },
+                $setOnInsert: await defaultGuildMemberData(member!)
+            },
+            { upsert: true }
+        );
+
+    // Update total VC time for the guild
+    await Actions.incrementGuildTotalVCTime(member, elapsedTime);
+
+    // Update VC longest session if necessary
+    if (elapsedTime > guildMemberData.vcLongestSession) {
+        await Actions.setLongestVCSession(member, elapsedTime);
+    }
+}

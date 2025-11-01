@@ -1,8 +1,9 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { AttachmentBuilder, ChatInputCommandInteraction, Colors, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, Colors, GuildMember, SlashCommandBuilder } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
 import path from "node:path";
+import { fetchGuildMember } from "@/lib/database/Members/fetchGuildMember";
+import { incrementShards } from "@/lib/database/Members/incrementShards";
 
 const name = "coin-toss";
 const description = "Do a coin toss! You get the computer's bet if your coin wins!";
@@ -31,7 +32,7 @@ const command = {
         await interaction.deferReply();
 
         // Verify that player even has enough shards for their bet
-        const memberDataRaw = await Actions.fetchGuildMember(interaction.member);
+        const memberDataRaw = await fetchGuildMember(interaction.member as GuildMember);
 
         // Member not found
         if (!memberDataRaw || !memberDataRaw.totalShards === null || !memberDataRaw.totalShards === undefined) {
@@ -108,7 +109,7 @@ const command = {
                 ]
             );
 
-            await Actions.incrementShards(interaction.member, computerBet + playerBet);
+            await incrementShards(interaction.member as GuildMember, computerBet + playerBet);
 
             await interaction.editReply({ embeds: [win], files: [headsFile] });
 
@@ -130,7 +131,7 @@ const command = {
                 ]
             );
 
-            await Actions.incrementShards(interaction.member, computerBet + playerBet);
+            await incrementShards(interaction.member as GuildMember, computerBet + playerBet);
 
             await interaction.editReply({ embeds: [win], files: [tailsFile] });
 
@@ -152,7 +153,7 @@ const command = {
                 ]
             );
 
-            await Actions.incrementShards(interaction.member, -playerBet);
+            await incrementShards(interaction.member as GuildMember, -playerBet);
 
             await interaction.editReply({ embeds: [loss], files: [headsFile] });
 
@@ -174,7 +175,7 @@ const command = {
                 ]
             );
 
-            await Actions.incrementShards(interaction.member, -playerBet);
+            await incrementShards(interaction.member as GuildMember, -playerBet);
 
             await interaction.editReply({ embeds: [loss], files: [tailsFile] });
 

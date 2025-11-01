@@ -1,10 +1,10 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { AttachmentBuilder, ChatInputCommandInteraction, Colors, MessageFlags, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, Colors, Guild, MessageFlags, SlashCommandBuilder } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
 import path from "node:path";
 import getThreadFromInteraction from "@/MarbleFoxxo/lib/helpers/getThreadFromInteraction";
 import { GuildReport } from "@/_Interfaces/GuildReport";
+import { fetchGuildReport } from "@/lib/database/Guilds/fetchGuildReport";
 
 const name = "close-report";
 const description = "Set the channel where member join logs are sent.";
@@ -32,7 +32,7 @@ const command = {
         }
 
         // Verify thread is valid report thread
-        const threadData: GuildReport | null = Actions.fetchGuildReport(interaction.guild, thread);
+        const threadData: GuildReport | null = await fetchGuildReport(interaction.guild as Guild, thread);
 
         if (!threadData) {
             const error = await ErrorEmbed(

@@ -1,5 +1,5 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { ChatInputCommandInteraction, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { setModLogChannel } from "@/lib/database/Moderation/setModLogChannel";
+import { ChatInputCommandInteraction, Guild, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 
 const name = "set-mod-log-channel";
 const description = "Set the channel where message logs (edits, etc) are sent.";
@@ -20,7 +20,7 @@ const command = {
         const channel = interaction.options.getChannel("channel", true);
 
         // Update moderation log channel
-        await Actions.setModLogChannel(interaction.guild, channel.id);
+        await setModLogChannel(interaction.guild as Guild, channel.id);
         
         await interaction.reply({
             content: `✅ Set <#${channel.id}> as the moderation log channel.`,

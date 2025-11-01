@@ -1,7 +1,7 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder, Guild, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import { LevelRoles } from "@/_Interfaces/LevelRoles";
+import { pushLvlRole } from "@/lib/database/Guilds/pushLvlRole";
 
 const name = "add-lvl-role";
 const description = "Add a role that will be assigned to a user when they reach the specified level.";
@@ -36,7 +36,7 @@ const command = {
             roleID: role.id
         };
 
-        const guildData = await Actions.pushLvlRole(interaction.guild, lvlRole);
+        const guildData = await pushLvlRole(interaction.guild as Guild, lvlRole);
 
         if (!guildData || !guildData.lvlRoles) {
             const error = await ErrorEmbed(

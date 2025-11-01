@@ -1,4 +1,4 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
+import { fetchGuildMember } from "@/lib/database/Members/fetchGuildMember";
 import { msToParts } from "@/MarbleFoxxo/lib/helpers/msToParts";
 import { AttachmentBuilder, ChatInputCommandInteraction, GuildMember, SlashCommandBuilder } from "discord.js";
 import { readFileSync } from "node:fs";
@@ -23,7 +23,7 @@ const command = {
         const member = interaction.options.getMember("user")! as GuildMember;
         const user = await member.user.fetch();
 
-        const stats = await Actions.fetchGuildMember(member);
+        const stats = await fetchGuildMember(member);
 
         if (!stats) {
             await interaction.reply({

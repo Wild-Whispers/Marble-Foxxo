@@ -1,5 +1,5 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { ChatInputCommandInteraction, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { setReportChannel } from "@/lib/database/Moderation/setReportsChannel";
+import { ChatInputCommandInteraction, Guild, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 
 const name = "set-reports-channel";
 const description = "Set the channel where reports from members are sent.";
@@ -20,7 +20,7 @@ const command = {
         const channel = interaction.options.getChannel("channel", true);
 
         // Update reports channel
-        await Actions.setReportChannel(interaction.guild, channel.id);
+        await setReportChannel(interaction.guild as Guild, channel.id);
         
         await interaction.reply({
             content: `✅ Set <#${channel.id}> as the reports channel.`,

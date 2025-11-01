@@ -1,7 +1,9 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder, Guild, GuildMember, SlashCommandBuilder } from "discord.js";
 import isMemberEligibleForLvlUp from "@/MarbleFoxxo/lib/helpers/isMemberEligibleForLvlUp";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
+import { fetchGuildMember } from "@/lib/database/Members/fetchGuildMember";
+import { incrementLvl } from "@/lib/database/Members/incrementLvl";
+import { fetchLvlRole } from "@/lib/database/Guilds/fetchLvlRole";
 
 const name = "lvl-up";
 const description = "Level up!";
@@ -16,7 +18,7 @@ const command = {
 
         const member = await interaction.guild?.members.fetch(interaction.user.id);
 
-        let memberData = await Actions.fetchGuildMember(member);
+        let memberData = await fetchGuildMember(member as GuildMember);
 
         if (!memberData) return;
 
@@ -46,7 +48,7 @@ const command = {
         }
 
         // Increment user lvl
-        memberData = await Actions.incrementLvl(member, -requiredTotalShards);
+        memberData = await incrementLvl(member as GuildMember, -requiredTotalShards);
 
         if (!memberData) return;
 
@@ -58,7 +60,7 @@ const command = {
         const { eligible: nextEligible, requiredTotalMessages: nextRequiredTotalMessages, requiredTotalShards: nextRequiredTotalShards } = isMemberEligibleForLvlUp(newCurrentLvl, newTotalMessages, newTotalShards)
 
         // If available lvl role, assign that as well
-        const lvlRole = await Actions.fetchLvlRole(interaction.guild, newCurrentLvl);
+        const lvlRole = await fetchLvlRole(interaction.guild as Guild, newCurrentLvl);
 
         let roleToAdd = null;
         if (lvlRole && lvlRole.roleID) {

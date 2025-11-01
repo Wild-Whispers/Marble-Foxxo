@@ -1,4 +1,4 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
+import { fetchGuild } from "@/lib/database/Guilds/fetchGuild";
 import { GuildMember } from "discord.js";
 
 export interface HasModPermissionResult {
@@ -9,7 +9,7 @@ export interface HasModPermissionResult {
 }
 
 export async function memberHasModPermission(member: GuildMember): Promise<HasModPermissionResult> {
-    const guildData = await Actions.fetchGuild(member.guild);
+    const guildData = await fetchGuild(member.guild);
     
     if (!guildData || !guildData.permittedToVerify || guildData.permittedToVerify.length === 0) {
         return {

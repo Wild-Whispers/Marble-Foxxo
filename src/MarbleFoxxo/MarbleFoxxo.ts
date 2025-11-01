@@ -6,6 +6,7 @@ import {
     Colors,
     Events,
     GatewayIntentBits,
+    Guild,
     GuildMember,
     Interaction,
     Message,
@@ -24,13 +25,26 @@ import dotenv from "dotenv";
 import { getMongo } from "@/lib/mongo";
 import { readdirSync } from "node:fs";
 import { pathToFileURL } from "node:url";
-import { Actions, initActions } from "./DatabaseActions/Actions";
 import startBatchSendModerationLogs from "./Cron/ModerationLogSend";
 import path from "node:path";
 import { fetchE6Media, scheduleFetchE6Media } from "./Cron/FetchE6Media";
 import MessageLeveling from "./lib/handlers/MessageLeveling";
 import MemberJoinLeave from "./lib/handlers/MemberJoinLeave";
 import MediaEmbed from "./Discord/EmbedWrappers/MediaEmbed";
+import { addGuild } from "@/lib/database/Guilds/addGuild";
+import { addGuildMember } from "@/lib/database/Members/addGuildMember";
+import { incrementPollVotesCast } from "@/lib/database/Members/incrementPollVotesCast";
+import { cacheMessage } from "@/lib/database/Messages/cacheMessage";
+import { incrementMessageCount } from "@/lib/database/Members/incrementMessageCount";
+import { incrementTotalMessages } from "@/lib/database/Guilds/incrementTotalMessages";
+import { incrementAttachmentsShared } from "@/lib/database/Members/incrementAttachmentsShared";
+import { cacheDeletedMessage } from "@/lib/database/Messages/cacheDeletedMessage";
+import { cacheEditedMessage } from "@/lib/database/Messages/cacheEditedMessage";
+import { incrementEditedMessages } from "@/lib/database/Members/incrementEditedMessages";
+import { removeGuild } from "@/lib/database/Guilds/removeGuild";
+import { setJoinedVCTimestamp } from "@/lib/database/Members/setJoinedVCTimestamp";
+import { setLeftVCTimestamp } from "@/lib/database/Members/setLeftVCTimestamp";
+import { incrementStreamingSessionsStarted } from "@/lib/database/Members/incrementStreamingSessionsStarted";
 
 // Configure dotenv
 dotenv.config();
@@ -56,7 +70,7 @@ const client = new Client({
     commands: Collection<string, any>;
 };
 
-const rest = new REST().setToken(process.env.MARBLE_FOXXO_SECRET!);
+const rest = new REST().setToken(process.env.MARBLE_FOXXO_TOKEN!);
 
 // Register slash commands
 (async () => {
@@ -102,13 +116,10 @@ client.once(Events.ClientReady, async readyClient => {
     // Log ready status
     console.info(`[${new Date().toISOString()}] Logged in as ${readyClient.user.tag}!`);
 
-    // Init database actions object
-    await initActions();
-
     // Add any guilds to database that aren't already there
     // This technically should never happen, but just in case
     for (const [, guild] of client.guilds.cache) {
-        await Actions.addGuild(guild);
+        await addGuild(guild);
     }
 
     // Start moderation cron job
@@ -121,7 +132,7 @@ client.once(Events.ClientReady, async readyClient => {
 
 client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
     // Add guild member to database
-    await Actions.addGuildMember(member);
+    await addGuildMember(member);
 });
 
 client.on(Events.MessagePollVoteAdd, async (pollAnswer: PollAnswer, userId: string) => {
@@ -134,23 +145,23 @@ client.on(Events.MessagePollVoteAdd, async (pollAnswer: PollAnswer, userId: stri
     if (!member) return;
 
     // Increment poll votes cast
-    await Actions.incrementPollVotesCast(guild, member);
+    await incrementPollVotesCast(guild, member);
 });
 
 client.on(Events.MessageCreate, async (message: Message) => {
     if (message.author.bot) return;
 
     // Cache
-    await Actions.cacheMessage(message);
+    await cacheMessage(message);
 
     // Increment message count for member
-    await Actions.incrementMessageCount(message);
+    await incrementMessageCount(message);
 
     // Increment guild total message count
-    await Actions.incrementTotalMessages(message.guild);
+    await incrementTotalMessages(message.guild as Guild);
 
     // Increment attachments count if necessary
-    if (message.attachments.size > 0) await Actions.incrementAttachmentsShared(message);
+    if (message.attachments.size > 0) await incrementAttachmentsShared(message);
 
     // DO LAST: Handle leveling up
     await MessageLeveling(message);
@@ -160,17 +171,17 @@ client.on(Events.MessageDelete, async (message: Message | PartialMessage) => {
     if (message.author?.bot) return;
 
     // Cache deleted message
-    await Actions.cacheDeletedMessage(message);
+    await cacheDeletedMessage(message);
 });
 
 client.on(Events.MessageUpdate, async (oldMsg: Message | PartialMessage, newMsg: Message | PartialMessage) => {
     if (oldMsg.author?.bot || newMsg.author?.bot) return;
 
     // Cache edited message
-    await Actions.cacheEditedMessage(oldMsg, newMsg as Message);
+    await cacheEditedMessage(oldMsg, newMsg as Message);
 
     // Increment edited messages
-    await Actions.incrementEditedMessages(newMsg as Message);
+    await incrementEditedMessages(newMsg as Message);
 
     // Old message isn't cached
     if (oldMsg.partial) {}
@@ -218,7 +229,7 @@ client.on(Events.GuildCreate, async guild => {
     console.info(`[${new Date().toISOString()}] [Guild Added] ${guild.id} | ${guild.name}`);
 
     // Add guild
-    await Actions.addGuild(guild);
+    await addGuild(guild);
 
     // Send welcome/setup message
     let inviteUser = null;
@@ -256,7 +267,7 @@ client.on(Events.GuildDelete, async guild => {
     console.info(`[${new Date().toISOString()}] [Guild Removed] ${guild.id} | ${guild.name}`);
 
     // Remove guild
-    Actions.removeGuild(guild);
+    removeGuild(guild);
 });
 
 client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
@@ -269,10 +280,10 @@ client.on(Events.GuildMemberRemove, async (member: GuildMember | PartialGuildMem
 
 client.on(Events.VoiceStateUpdate, async (oldState: VoiceState, newState: VoiceState) => {
     // User joins voice channel
-    if (!oldState.channelId && newState.channelId) await Actions.setJoinedVCTimestamp(newState.member);
+    if (!oldState.channelId && newState.channelId) await setJoinedVCTimestamp(newState.member as GuildMember);
 
     // User leaves voice channel
-    if (oldState.channelId && !newState.channelId) await Actions.setLeftVCTimestamp(oldState.member);
+    if (oldState.channelId && !newState.channelId) await setLeftVCTimestamp(oldState.member as GuildMember);
 
     // User switches channels
     if (oldState.channel && newState.channelId && oldState.channelId !== newState.channelId) {
@@ -286,7 +297,7 @@ client.on(Events.VoiceStateUpdate, async (oldState: VoiceState, newState: VoiceS
 
         if (!member) return;
 
-        await Actions.incrementStreamingSessionsStarted(guild, member);
+        await incrementStreamingSessionsStarted(guild, member);
     }
 
     // User stopped streaming
@@ -328,7 +339,7 @@ client.on(Events.ShardError, (error, shardId) => {
 });
 
 // Login
-client.login(process.env.MARBLE_FOXXO_SECRET).catch((error: Error) => {
+client.login(process.env.MARBLE_FOXXO_TOKEN).catch((error: Error) => {
     if (error.message.includes("TOKEN_INVALID")) {
         console.error(`[${new Date().toISOString()}] [Bot Login Error] Invalid bot token`);
         return;

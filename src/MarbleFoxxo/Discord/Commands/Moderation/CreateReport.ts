@@ -1,9 +1,11 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { AttachmentBuilder, ChannelType, ChatInputCommandInteraction, Colors, Message, MessageFlags, SlashCommandBuilder, ThreadAutoArchiveDuration } from "discord.js";
+import { AttachmentBuilder, ChannelType, ChatInputCommandInteraction, Colors, Guild, Message, MessageFlags, SlashCommandBuilder, ThreadAutoArchiveDuration } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
 import path from "node:path";
 import { listenToThread } from "@/MarbleFoxxo/MarbleFoxxo";
+import { fetchGuild } from "@/lib/database/Guilds/fetchGuild";
+import { incrementReports } from "@/lib/database/Guilds/incrementReports";
+import { appendReportMessage } from "@/lib/database/Moderation/appendReportMessage";
 
 const name = "create-report";
 const description = "Set the channel where member join logs are sent.";
@@ -17,7 +19,7 @@ const command = {
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
         // Fetch reports channel
-        let guildData = await Actions.fetchGuild(interaction.guild);
+        let guildData = await fetchGuild(interaction.guild as Guild);
 
         if (!guildData || !guildData.reportsChannel) {
             const error = await ErrorEmbed(
@@ -48,7 +50,7 @@ const command = {
         }
 
         // Increment report
-        guildData = await Actions.incrementReports(interaction.guild);
+        guildData = await incrementReports(interaction.guild as Guild);
 
         if (!guildData || !guildData.reportsCount) {
             const error = await ErrorEmbed(
@@ -114,7 +116,7 @@ const command = {
 
                 // Finally attach the listener to it
                 const stopListening = await listenToThread(thread, async (msg: Message) => {
-                    await Actions.appendReportMessage(interaction.guild, thread, msg);
+                    await appendReportMessage(interaction.guild as Guild, thread, msg);
                 });
 
                 // Stop listening after a period

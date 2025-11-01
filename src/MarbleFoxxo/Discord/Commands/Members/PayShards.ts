@@ -1,8 +1,9 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { AttachmentBuilder, ChatInputCommandInteraction, Colors, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, Colors, GuildMember, SlashCommandBuilder } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import path from "node:path";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
+import { fetchGuildMember } from "@/lib/database/Members/fetchGuildMember";
+import { payShards } from "@/lib/database/Members/payShards";
 
 const name = "pay";
 const description = "Pay another user shards!";
@@ -46,7 +47,7 @@ const command = {
         }
 
         // Verify that recipient exists in database
-        const recipientDataRaw = await Actions.fetchGuildMember(recipient);
+        const recipientDataRaw = await fetchGuildMember(recipient);
 
         // Recipient record not found
         if (!recipientDataRaw) {
@@ -61,7 +62,7 @@ const command = {
         }
 
         // Verify that member even has enough shards for their bet
-        const memberDataRaw = await Actions.fetchGuildMember(interaction.member);
+        const memberDataRaw = await fetchGuildMember(interaction.member as GuildMember);
 
         // Member not found
         if (!memberDataRaw || !memberDataRaw.totalShards) {
@@ -88,7 +89,7 @@ const command = {
         }
 
         // Else, pay the shards
-        await Actions.payShards(interaction.member, recipient, amount);
+        await payShards(interaction.member as GuildMember, recipient, amount);
 
         const shard = new AttachmentBuilder(path.join(__dirname, "..", "Fun", "fun_assets", "shard.png"), { name: "shard.png" });
 

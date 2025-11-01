@@ -1,6 +1,6 @@
 import { LevelRoles } from "@/_Interfaces/LevelRoles";
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { fetchAllLvlRoles } from "@/lib/database/Guilds/fetchAllLvlRoles";
+import { ChatInputCommandInteraction, Colors, EmbedBuilder, Guild, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 
 const name = "list-lvl-roles";
 const description = "List all of the server's current level roles.";
@@ -15,7 +15,7 @@ const command = {
         await interaction.deferReply();
 
         // Fetch all level roles
-        const rolesRaw = await Actions.fetchAllLvlRoles(interaction.guild);
+        const rolesRaw = await fetchAllLvlRoles(interaction.guild as Guild);
 
         const fields = [];
         if (rolesRaw) {

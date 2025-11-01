@@ -1,9 +1,9 @@
 import { HasModPermissionResult, memberHasModPermission } from "@/MarbleFoxxo/lib/helpers/memberHasModPermission";
 import { AttachmentBuilder, ChatInputCommandInteraction, Colors, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
 import path from "node:path";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
+import { muteMember } from "@/lib/database/Moderation/muteMember";
 
 const name = "mute";
 const description = "Mute a server member.";
@@ -105,7 +105,7 @@ const command = {
 
         // Mute member
         await memberToMute.timeout(durationInMilliseconds, `Applied by ${interaction.user.displayName}: ${reasonGiven}`);
-        await Actions.muteMember(memberToMute, durationInMilliseconds, reasonGiven ?? null);
+        await muteMember(memberToMute, durationInMilliseconds, reasonGiven ?? null);
 
         // Send success message
         const embed = await new EmbedBuilder()

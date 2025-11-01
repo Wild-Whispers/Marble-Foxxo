@@ -1,5 +1,5 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
-import { ChatInputCommandInteraction, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { setMemberLeaveLogChannel } from "@/lib/database/Moderation/setMemberLeaveLogChannel";
+import { ChatInputCommandInteraction, Guild, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 
 const name = "set-member-leave-channel";
 const description = "Set the channel where member leave logs are sent.";
@@ -20,7 +20,7 @@ const command = {
         const channel = interaction.options.getChannel("channel", true);
 
         // Update moderation log channel
-        await Actions.setMemberLeaveLogChannel(interaction.guild, channel.id);
+        await setMemberLeaveLogChannel(interaction.guild as Guild, channel.id);
         
         await interaction.reply({
             content: `✅ Set <#${channel.id}> as the member leave log channel.`,

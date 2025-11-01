@@ -1,4 +1,5 @@
-import { Actions } from "@/MarbleFoxxo/DatabaseActions/Actions";
+import { decrementTotalMembers } from "@/lib/database/Guilds/decrementTotalMembers";
+import { incrementTotalMembers } from "@/lib/database/Guilds/incrementTotalMembers";
 import MediaEmbed from "@/MarbleFoxxo/Discord/EmbedWrappers/MediaEmbed";
 import { AttachmentBuilder, Colors, GuildMember, PartialGuildMember } from "discord.js";
 import path from "node:path";
@@ -13,7 +14,7 @@ export default async function MemberJoinLeave(member: GuildMember | PartialGuild
     }
 
     // Fetch log channel
-    const guildData = joinEvent ? await Actions.incrementTotalMembers(member.guild) : await Actions.decrementTotalMembers(member.guild);
+    const guildData = joinEvent ? await incrementTotalMembers(member.guild) : await decrementTotalMembers(member.guild);
 
     if (process.env.MODE === "development") console.log("Guild Data fetched on member join/leave:", guildData);
 

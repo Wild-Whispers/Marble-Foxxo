@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import { E621Manager } from "../e621/E621Manager";
-import { Actions } from "../DatabaseActions/Actions";
+import { cacheE6Media } from "@/lib/database/Media/cacheE6Media";
 
 export function scheduleFetchE6Media() {
     // Run every hour
@@ -39,6 +39,6 @@ export async function fetchE6Media() {
     // Cache to Redis
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     allPosts.forEach(async (post: any) => {
-        await Actions.cacheE6Media(post);
+        await cacheE6Media(post);
     });
 }
