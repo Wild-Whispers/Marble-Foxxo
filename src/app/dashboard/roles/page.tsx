@@ -5,6 +5,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorMessage from "@/components/Messages/ErrorMessage";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import GuildRolesContent from "./GuildRolesContent";
 
 export default function DashboardGuildRoles() {
     const searchParams = useSearchParams();
@@ -49,9 +50,10 @@ export default function DashboardGuildRoles() {
 
             {
                 !guildID ||
-                !DBGuildData ?
+                !DBGuildData||
+                !guildData ?
                 <LoadingSpinner size={16} thickness={2}/> :
-                "Reminder to self: Write page content here"
+                <GuildRolesContent guildData={guildData} DBGuildData={DBGuildData} />
             }
         </Col>
     );

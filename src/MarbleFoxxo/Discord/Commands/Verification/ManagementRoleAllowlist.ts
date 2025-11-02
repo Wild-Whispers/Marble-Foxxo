@@ -1,8 +1,9 @@
-import { getMongo } from "@/lib/mongo";
+import { addManagementRole } from "@/lib/database/Verification/addManagementRole";
+import { removeManagementRole } from "@/lib/database/Verification/removeManagementRole";
 import { ChatInputCommandInteraction, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 
-const name = "add-mod-role";
-const description = "Add a role that is able to verify and moderate your members.";
+const name = "management-role";
+const description = "Add a role that is able to manage your server and members via Marble-Foxxo.";
 
 const command = {
     data: new SlashCommandBuilder()
@@ -35,15 +36,9 @@ const command = {
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const subcommand = interaction.options.getSubcommand();
         const role = interaction.options.getRole("role", true);
-        const mongo = getMongo();
 
         if (subcommand === "add") {
-            await mongo.database
-                .collection("guilds")
-                .findOneAndUpdate(
-                    { guildID: interaction.guildId },
-                    { $addToSet: { permittedToVerify: role.id } }
-                );
+            await addManagementRole(interaction.guildId!, role.id);
             
             await interaction.reply({
                 content: `✅ Added <@&${role.id}> as a verify role.`,
@@ -52,13 +47,7 @@ const command = {
         }
 
         if (subcommand === "remove") {
-            await mongo.database
-                .collection("guilds")
-                .findOneAndUpdate(
-                    { guildID: interaction.guildId },
-                    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                    { $pull: { permittedToVerify: role.id } } as any
-                );
+            await removeManagementRole(interaction.guildId!, role.id);
 
             await interaction.reply({
                 content: `❌ Removed <@&${role.id}> from verify roles.`,

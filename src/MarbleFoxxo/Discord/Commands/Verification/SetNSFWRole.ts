@@ -1,4 +1,4 @@
-import { getMongo } from "@/lib/mongo";
+import { setNSFWRole } from "@/lib/database/Verification/setNSFWRole";
 import { ChatInputCommandInteraction, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 
 const name = "set-nsfw-access-role";
@@ -24,15 +24,9 @@ const command = {
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const subcommand = interaction.options.getSubcommand();
         const role = interaction.options.getRole("role", true);
-        const mongo = getMongo();
 
         if (subcommand === "set") {
-            await mongo.database
-                .collection("guilds")
-                .findOneAndUpdate(
-                    { guildID: interaction.guildId },
-                    { $set: { nsfwRole: role.id } }
-                );
+            await setNSFWRole(interaction.guildId!, role.id);
             
             await interaction.reply({
                 content: `✅ Set <@&${role.id}> as a NSFW access role.`,
