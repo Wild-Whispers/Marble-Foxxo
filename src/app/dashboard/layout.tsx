@@ -36,6 +36,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
             id="dashboard-container"
             classes="
                 w-full
+                flex-grow
 
                 bg-zinc-950
                 text-white

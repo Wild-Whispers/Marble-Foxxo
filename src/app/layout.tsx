@@ -1,7 +1,11 @@
+"use client";
+
 import { ReactNode } from "react";
 import "./globals.css";
+import Col from "@/components/Col";
+import Navbar from "./Navbar";
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
     return (
         <html lang="en" className="bg-neutral-950 text-neutral-50">
             <head>
@@ -12,14 +16,20 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             </head>
             <body className="
                 flex
-                flex-row
+                flex-col
                 w-full
                 min-h-screen
-                p-2
 
                 bg-neutral-950
+                text-white
             ">
-                {children}
+
+                <Navbar />
+
+                <Col id="page-content" classes="flex-grow">
+                    {children}
+                </Col>
+                
             </body>
         </html>
     );
