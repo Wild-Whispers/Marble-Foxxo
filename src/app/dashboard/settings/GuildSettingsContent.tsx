@@ -80,7 +80,7 @@ export default function GuildSettingsContent({ guildData, DBGuildData }: { guild
                     >
                         <option value={LvlUpNotifactionDestinations.RELATIVE_CHANNEL}>Sent in same channel as user message</option>
                         <option value={LvlUpNotifactionDestinations.DEFINED_CHANNEL}>Specific channel</option>
-                        <option value={LvlUpNotifactionDestinations.USER_SPECIFIED}>Let the user specify</option>
+                        <option disabled value={LvlUpNotifactionDestinations.USER_SPECIFIED}>Let the user specify</option> {/* Temporarily disabled, still in development */}
                     </Dropdown>
                 </Col>
 
