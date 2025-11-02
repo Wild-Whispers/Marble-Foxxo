@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { ReactNode } from "react";
 
-export default function NavbarAccountSectionButton({ text, href }: { text: string, href: string }) {
+export default function NavbarAccountSectionButton({ text, href }: { text: string | ReactNode, href: string }) {
     return (
         <Link
             href={href}
             className="
+                flex
+                flex-row
+                items-center
                 p-1.5
                 
                 bg-gradient-to-tr
@@ -23,6 +27,8 @@ export default function NavbarAccountSectionButton({ text, href }: { text: strin
                 font-semibold
                 rounded-md
                 cursor-pointer
+
+                gap-2
             "
         >
             {text}
