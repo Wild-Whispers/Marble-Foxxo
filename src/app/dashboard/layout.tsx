@@ -68,7 +68,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
                 {
                     accessToken ? children
                     :
-                    <ErrorMessage description={`Your session has expired. Please sign in again. ${process.env.NODE_ENV === "development" ? "https://discord.com/oauth2/authorize?client_id=1419047521606570004&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fauth%2Fcallback&scope=identify+guilds+email" : "https://discord.com/oauth2/authorize?client_id=1390546028226412544&response_type=code&redirect_uri=https%3A%2F%2Fmarblefoxxo.wildwhispers.xyz%2Fapi%2Fauth%2Fcallback&scope=identify+guilds+email"}`} />
+                    <ErrorMessage description="Your session has expired. Please sign in again." />
                 }
             </Col>
 
