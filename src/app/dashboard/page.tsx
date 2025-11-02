@@ -49,8 +49,7 @@ export default async function Dashboard() {
                     <p className="text-xs text-white/50">Discriminator: {userData.username}</p>
                 </Col>
 
-                <p className="text-md">Welcome, {userData.global_name}! To add our bot to one of your servers, please use the link below:</p>
-                <Link href="https://discord.com/oauth2/authorize?client_id=1390546028226412544&permissions=2840998996344823&integration_type=0&scope=bot" className="text-sm underline">https://discord.com/oauth2/authorize?client_id=1390546028226412544&permissions=2840998996344823&integration_type=0&scope=bot</Link>
+                <p className="text-md">Welcome, {userData.global_name}! To add our bot to one of your servers, please use the Invite Button at the top of the page.</p>
     
             </Col>
         );
