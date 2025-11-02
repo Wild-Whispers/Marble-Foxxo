@@ -1,6 +1,6 @@
 "use client";
 
-export default function FormSubmitButton() {
+export default function FormSubmitButton({ text }: { text: string }) {
     return (
         <button
             type="submit"
@@ -23,7 +23,7 @@ export default function FormSubmitButton() {
                 cursor-pointer
             "
         >
-            Update Channels
+            {text}
         </button>
     );
 }

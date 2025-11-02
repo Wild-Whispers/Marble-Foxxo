@@ -27,11 +27,7 @@ export default function UpdateChannelsForm({ guildID, guildData, channels }: { g
     return (
         <form
             action={action}
-            className="
-                flex
-                flex-col
-                gap-2
-            "
+            className="p-1.5 bg-teal-950 rounded-md gap-1.5"
         >
             {/*
             - set member join channel
@@ -120,7 +116,7 @@ export default function UpdateChannelsForm({ guildID, guildData, channels }: { g
             {
                 modified &&
                 <Row classes="justify-end">
-                    <FormSubmitButton />
+                    <FormSubmitButton text="Update Channels" />
                 </Row>
             }
             

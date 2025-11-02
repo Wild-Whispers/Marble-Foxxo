@@ -1,0 +1,5 @@
+export enum LvlUpNotifactionDestinations {
+    RELATIVE_CHANNEL = "RELATIVE_CHANNEL", // Default
+    DEFINED_CHANNEL = "DEFINED_CHANNEL",
+    USER_SPECIFIED = "USER_SPECIFIED"
+}

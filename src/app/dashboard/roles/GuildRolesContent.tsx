@@ -125,7 +125,7 @@ export default function GuildRolesContent({ guildData, DBGuildData }: { guildDat
                 {
                     modified &&
                     <Row classes="justify-end">
-                        <FormSubmitButton />
+                        <FormSubmitButton text="Update Roles" />
                     </Row>
                 }
 
