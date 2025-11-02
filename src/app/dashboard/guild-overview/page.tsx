@@ -5,6 +5,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorMessage from "@/components/Messages/ErrorMessage";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import GuildOverviewContent from "./GuildOverviewContent";
 
 export default function DashboardGuildOverview() {
     const searchParams = useSearchParams();
@@ -49,10 +50,12 @@ export default function DashboardGuildOverview() {
 
             {
                 !guildID ||
-                !DBGuildData ?
+                !DBGuildData||
+                !guildData ?
                 <LoadingSpinner size={16} thickness={2}/> :
-                "Reminder to self: Write page content here"
+                <GuildOverviewContent guildData={guildData} DBGuildData={DBGuildData} />
             }
         </Col>
     );
 }
+
