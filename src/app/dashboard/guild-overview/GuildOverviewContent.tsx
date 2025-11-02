@@ -70,26 +70,3 @@ export default function GuildOverviewContent({ guildData, DBGuildData }: { guild
         </Col>
     );
 }
-
-/*
-{
-  "_id": "68cf0d609a0d43be5bab0e0a",
-  "guildID": "1417679566532509799",
-  "accessRole": "1417683576962678794",
-  "active": true,
-  "nsfwRole": "1417712202151891045",
-  "permittedToVerify": [
-    "1417681126549356564",
-    "1417680895846121573",
-    "1417680520237678692",
-    "1417681348381900890",
-    "1417682399571218482"
-  ],
-  "moderationLogChannel": "1419457511605538817",
-  "totalMessages": 2553,
-  "vcTotalTime": 381477378,
-  "totalMembers": 36,
-  "memberLeaveLogs": "1421558248959643748",
-  "memberJoinLogs": "1417692099003940955"
-}
-  */
