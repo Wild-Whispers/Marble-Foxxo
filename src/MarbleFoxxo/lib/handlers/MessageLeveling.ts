@@ -2,6 +2,9 @@ import { Colors, EmbedBuilder, GuildMember, Message } from "discord.js";
 import isMemberEligibleForLvlUp from "../helpers/isMemberEligibleForLvlUp";
 import { fetchGuildMember } from "@/lib/database/Members/fetchGuildMember";
 import { pausePrompts } from "@/lib/database/Members/pausePrompts";
+import { fetchLvlUpNotificationsDestination } from "@/lib/database/Guilds/fetchLvlUpNotificationsDestination";
+import { LvlUpNotificationsDestinationInterface } from "@/_Interfaces/LvlUpNotificationsDestination";
+import { LvlUpNotifactionDestinations } from "@/_Enums/LvlUpNotifactionDestinations";
 
 export default async function MessageLeveling(message: Message) {
     if (!message || !message.content) return;
@@ -50,7 +53,25 @@ export default async function MessageLeveling(message: Message) {
             { name: "Total Shards:", value: `⟠${totalShards}/⟠${requiredTotalShards}`}
         ]);
 
-    await message.reply({ embeds: [embed] });
+    // Fetch LvlUpNotifactionDestinations
+    const LvlUpNotifactionDestinationsRaw: LvlUpNotificationsDestinationInterface = await fetchLvlUpNotificationsDestination(message.guildId!);
+    const lvlUpSetting = LvlUpNotifactionDestinationsRaw.setting;
+    const lvlUpChannelID = LvlUpNotifactionDestinationsRaw.channelID;
+
+    if (lvlUpSetting === LvlUpNotifactionDestinations.DEFINED_CHANNEL) {
+        // Modify embed description to mention user
+        embed.setDescription(`Congrats, ${message.member}! You are eligible to level up to Lvl.${currentLvl + 1}!`);
+
+        // Fetch the channel
+        const channel = await message.guild?.channels.fetch(lvlUpChannelID!);
+
+        // Check channel exists & is text based
+        if (channel && channel.isTextBased()) channel.send({ embeds: [embed]});
+        else console.warn(`[${new Date().toISOString()}] [Embed Error] A lvl-up embed was attempted to be sent to channel with id '${lvlUpChannelID}', but the specified channel is not text-based. This should not happen, and is a bug.`);
+    } else if (lvlUpSetting === LvlUpNotifactionDestinations.RELATIVE_CHANNEL) {
+        // Send embed as-is to the message's channel
+        await message.reply({ embeds: [embed] });
+    }
 
     // Don't bug the user repeatedly. Wait a while.
     await pausePrompts(message.member as GuildMember);
