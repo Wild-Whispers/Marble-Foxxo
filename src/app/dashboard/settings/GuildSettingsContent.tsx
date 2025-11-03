@@ -1,4 +1,4 @@
-import { ActionUpdateSettings } from "@/_Actions/ActionUpdateSettings";
+import { ActionUpdateSettings, ActionUpdateSettingsReturn } from "@/_Actions/ActionUpdateSettings";
 import { LvlUpNotifactionDestinations } from "@/_Enums/LvlUpNotifactionDestinations";
 import FormSubmitButton from "@/components/Buttons/FormSubmitButton";
 import Col from "@/components/Col";
@@ -6,27 +6,34 @@ import Dropdown from "@/components/Inputs/Dropdown";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorMessage from "@/components/Messages/ErrorMessage";
 import Row from "@/components/Row";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export default function GuildSettingsContent({ guildData, DBGuildData }: { guildData: any, DBGuildData: any }) {
-    const [formValues, action] = useActionState(ActionUpdateSettings, {
+    const initial = useMemo(() => ({
         success: false,
         message: undefined,
         lvlUpNotificationDestination: {
             setting: DBGuildData.lvlUpNotificationDestination?.setting as LvlUpNotifactionDestinations ?? LvlUpNotifactionDestinations.RELATIVE_CHANNEL,
             channel: DBGuildData.lvlUpNotificationDestination?.channelID ?? null
         }
-    });
+    }), [DBGuildData]);
+    const [serverState, action] = useActionState(ActionUpdateSettings, initial);
+    const [draft, setDraft] = useState<ActionUpdateSettingsReturn>(initial);
     const [modified, setModified] = useState<boolean>(false);
     const [roles, setRoles] = useState<Array<any> | null>(null); /* eslint-disable-line @typescript-eslint/no-explicit-any */
     const [channels, setChannels] = useState<Array<any> | null>(null); /* eslint-disable-line @typescript-eslint/no-explicit-any */
     const [error, setError] = useState<string | null>(null);
-    const [lvlUpNotificationDestinationSetting, setLvlUpNotificationDestinationSetting] = useState<LvlUpNotifactionDestinations>(formValues.lvlUpNotificationDestination.setting);
+    const [lvlUpNotificationDestinationSetting, setLvlUpNotificationDestinationSetting] = useState<LvlUpNotifactionDestinations>(draft.lvlUpNotificationDestination.setting);
+
+    useEffect(() => setDraft(initial), [initial]);
 
     useEffect(() => {
-        if (formValues.success) setModified(false);
-    }, [formValues]);
+        if (serverState.success) {
+            setDraft(serverState);
+            setModified(false);
+        }
+    }, [serverState]);
 
     useEffect(() => {
         (async () => {
@@ -70,10 +77,10 @@ export default function GuildSettingsContent({ guildData, DBGuildData }: { guild
                 <Col>
                     <p className="">Level-Up Notifications Preferred Destination:</p>
                     <Dropdown
-                        key={formValues.lvlUpNotificationDestination.setting}
                         name="lvlUpNotificationDestinationSetting"
-                        defaultValue={formValues.lvlUpNotificationDestination.setting}
+                        value={draft.lvlUpNotificationDestination.setting}
                         onChange={(e: any) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
+                            setDraft(prev => ({ ...prev, lvlUpNotificationDestination: { ...serverState.lvlUpNotificationDestination, setting: e.target.value } }));
                             setModified(true);
                             setLvlUpNotificationDestinationSetting(e.currentTarget.value);
                         }}
@@ -89,10 +96,12 @@ export default function GuildSettingsContent({ guildData, DBGuildData }: { guild
                     <Col>
                         <p className="">Specify a channel where to send level-up notifications:</p>
                         <Dropdown
-                            key={formValues.lvlUpNotificationDestination.channel}
                             name="lvlUpNotificationDestinationChannel"
-                            defaultValue={formValues.lvlUpNotificationDestination.channel ?? ""}
-                            onChange={() => setModified(true)}
+                            value={draft.lvlUpNotificationDestination.channel ?? ""}
+                            onChange={(e: any) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
+                                setDraft(prev => ({ ...prev, lvlUpNotificationDestination: { ...serverState.lvlUpNotificationDestination, channel: e.target.value } }));
+                                setModified(true);
+                            }}
                         >
                             {
                                 !channels ?

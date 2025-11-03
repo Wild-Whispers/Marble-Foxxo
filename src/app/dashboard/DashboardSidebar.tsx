@@ -6,7 +6,7 @@ import { Cog6ToothIcon, HashtagIcon, InformationCircleIcon, ShieldExclamationIco
 import GuildsDropdown from "./GuildsDropdown";
 import DashboardNavButton from "./DashboardNavButton";
 import { ReactNode, useEffect, useState } from "react";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -15,6 +15,9 @@ export default function DashboardSidebar({ accessToken, guilds }: { accessToken:
     const [userIsManager, setUserIsManager] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const pathname = usePathname();
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [selectedGuildID, setSelectedGuildID] = useState<string | null>(null);
     const userDataRaw = Cookies.get("discord_user");
 
     useEffect(() => {
@@ -36,21 +39,19 @@ export default function DashboardSidebar({ accessToken, guilds }: { accessToken:
     useEffect(() => {
         try {
             // Check for specific errors
-        if (!accessToken || !userDataRaw) throw new Error("Your session has expired. Please sign in again.");
-        if (!guilds) throw new Error("There was an error fetching your guilds.");
-        if (accessToken && guilds.length === 0) throw new Error("Your share no guilds with Marble Foxxo.");
+        if (!userDataRaw) throw new Error("Your session has expired. Please sign in again.");
         } catch (error: any) { /* eslint-disable-line @typescript-eslint/no-explicit-any */
             setError(error.toString());
         }
-    }, [accessToken, userDataRaw, guilds]);
+
+        setSelectedGuildID(searchParams.get("guild"));
+    }, [accessToken, userDataRaw, guilds, searchParams]);
 
     const setWorkingGuild = (guildID: string) => {
         setGuildParam(guildID);
 
-        redirect(`?guild=${guildID}`);
+        router.push(`?guild=${guildID}`);
     };
-
-    if (error) return <ErrorMessage description={error} />;
 
     interface NavLink {
         href: string,
@@ -74,9 +75,14 @@ export default function DashboardSidebar({ accessToken, guilds }: { accessToken:
         ...managementOnlyNavLinks
     ];
 
+    if (!accessToken) return <ErrorMessage description="Your session has expired. Please sign in again." />;
+    if (!guilds) return <ErrorMessage description="There was an error fetching your guilds." />;
+    if (accessToken && guilds.length === 0) return <ErrorMessage description="Your share no guilds with Marble Foxxo." />;
+    if (error) return <ErrorMessage description={error} />;
+
     return (
         <Col id="dashboard-sidebar-content" classes="gap-2">
-            <GuildsDropdown guilds={guilds!} setWorkingGuild={setWorkingGuild} />
+            <GuildsDropdown guilds={guilds!} selectedGuildID={selectedGuildID ?? guilds![0].id} setWorkingGuild={setWorkingGuild} />
 
             <Col id="dashboard-sidebar-navigation-links">
                 {

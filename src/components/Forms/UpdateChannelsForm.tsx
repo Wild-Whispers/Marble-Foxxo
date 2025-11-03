@@ -1,28 +1,34 @@
 "use client";
 
-import { ActionUpdateChannels } from "@/_Actions/ActionUpdateChannels";
+import { ActionUpdateChannels, ActionUpdateChannelsReturn } from "@/_Actions/ActionUpdateChannels";
 import Col from "../Col";
 import Row from "../Row";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import FormSubmitButton from "../Buttons/FormSubmitButton";
 import ErrorMessage from "../Messages/ErrorMessage";
 import Dropdown from "../Inputs/Dropdown";
-
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export default function UpdateChannelsForm({ guildID, guildData, channels }: { guildID: string, guildData: any, channels: Array<any> }) {
-    const [formValues, action] = useActionState(ActionUpdateChannels, {
+    const initial = useMemo(() => ({
         success: false,
         message: undefined,
         memberJoinChannel: guildData?.memberJoinLogs ?? "",
         memberLeaveChannel: guildData?.memberLeaveLogs ?? "",
         modLogChannel: guildData?.moderationLogChannel ?? "",
         reportsChannel: guildData?.reportsChannel ?? ""
-    });
+    }), [guildData]);
+    const [serverState, action] = useActionState(ActionUpdateChannels, initial);
+    const [draft, setDraft] = useState<ActionUpdateChannelsReturn>(initial);
     const [modified, setModified] = useState<boolean>(false);
 
+    useEffect(() => setDraft(initial), [guildID, initial]);
+
     useEffect(() => {
-        if (formValues.success) setModified(false);
-    }, [formValues]);
+        if (serverState.success) {
+            setDraft(serverState);
+            setModified(false);
+        }
+    }, [serverState]);
 
     return (
         <form
@@ -41,14 +47,15 @@ export default function UpdateChannelsForm({ guildID, guildData, channels }: { g
             <Col>
                 <label htmlFor="memberJoinChannel">Member Join Logs Channel</label>
                 <Dropdown
-                    key={formValues.memberJoinChannel}
                     name="memberJoinChannel"
-                    defaultValue={formValues.memberJoinChannel}
-                    onChange={() => setModified(true)}
+                    value={draft.memberJoinChannel}
+                    onChange={(e: any) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
+                        setDraft(prev => ({ ...prev, memberJoinChannel: e.target.value }));
+                        setModified(true);
+                    }}
                 >
                     {
-                        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                        channels.map((channel: any, i: number) => {
+                        channels.map((channel: any, i: number) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
                             return <option key={i} value={channel.id}>#{channel.name}</option>
                         })
                     }
@@ -58,14 +65,15 @@ export default function UpdateChannelsForm({ guildID, guildData, channels }: { g
             <Col>
                 <label htmlFor="memberLeaveChannel">Member Leave Logs Channel</label>
                 <Dropdown
-                    key={formValues.memberLeaveChannel}
                     name="memberLeaveChannel"
-                    defaultValue={formValues.memberLeaveChannel}
-                    onChange={() => setModified(true)}
+                    value={draft.memberLeaveChannel}
+                    onChange={(e: any) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
+                        setDraft(prev => ({ ...prev, memberLeaveChannel: e.target.value }));
+                        setModified(true);
+                    }}
                 >
                     {
-                        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                        channels.map((channel: any, i: number) => {
+                        channels.map((channel: any, i: number) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
                             return <option key={i} value={channel.id}>#{channel.name}</option>
                         })
                     }
@@ -75,14 +83,15 @@ export default function UpdateChannelsForm({ guildID, guildData, channels }: { g
             <Col>
                 <label htmlFor="modLogChannel">Moderation Logs Channel</label>
                 <Dropdown
-                    key={formValues.modLogChannel}
                     name="modLogChannel"
-                    defaultValue={formValues.modLogChannel}
-                    onChange={() => setModified(true)}
+                    value={draft.modLogChannel}
+                    onChange={(e: any) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
+                        setDraft(prev => ({ ...prev, modLogChannel: e.target.value }));
+                        setModified(true);
+                    }}
                 >
                     {
-                        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                        channels.map((channel: any, i: number) => {
+                        channels.map((channel: any, i: number) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
                             return <option key={i} value={channel.id}>#{channel.name}</option>
                         })
                     }
@@ -92,14 +101,15 @@ export default function UpdateChannelsForm({ guildID, guildData, channels }: { g
             <Col>
                 <label htmlFor="reportsChannel">Reports Channel</label>
                 <Dropdown
-                    key={formValues.reportsChannel}
                     name="reportsChannel"
-                    defaultValue={formValues.reportsChannel}
-                    onChange={() => setModified(true)}
+                    value={draft.reportsChannel}
+                    onChange={(e: any) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
+                        setDraft(prev => ({ ...prev, reportsChannel: e.target.value }));
+                        setModified(true);
+                    }}
                 >
                     {
-                        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                        channels.map((channel: any, i: number) => {
+                        channels.map((channel: any, i: number) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
                             return <option key={i} value={channel.id}>#{channel.name}</option>
                         })
                     }
@@ -107,9 +117,9 @@ export default function UpdateChannelsForm({ guildID, guildData, channels }: { g
             </Col>
 
             {
-                !formValues.success && formValues.message &&
+                !draft.success && draft.message &&
                 <Col>
-                    <ErrorMessage title=":(" description={formValues.message} />
+                    <ErrorMessage title=":(" description={draft.message} />
                 </Col>
             }
 

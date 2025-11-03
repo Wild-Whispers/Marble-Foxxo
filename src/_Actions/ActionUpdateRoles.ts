@@ -1,7 +1,7 @@
 "use server";
 
-import { addManagementRole } from "@/lib/database/Verification/addManagementRole";
 import { setAccessRole } from "@/lib/database/Verification/setAccessRole";
+import { setManagementRoles } from "@/lib/database/Verification/setManagementRoles";
 import { setNSFWRole } from "@/lib/database/Verification/setNSFWRole";
 
 export interface ActionUpdateRolesReturn {
@@ -23,9 +23,7 @@ export async function ActionUpdateRoles(prevState: any, data: FormData): Promise
         // Update channels
         await setAccessRole(guildID, accessRole);
         await setNSFWRole(guildID, NSFWRole);
-        for (const mRole of managementRoles) {
-            await addManagementRole(guildID, mRole);
-        }
+        await setManagementRoles(guildID, managementRoles);
 
         // Return
         return {

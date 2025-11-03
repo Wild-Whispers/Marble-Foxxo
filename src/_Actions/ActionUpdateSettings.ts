@@ -3,14 +3,14 @@
 import { LvlUpNotifactionDestinations } from "@/_Enums/LvlUpNotifactionDestinations";
 import { setLvlUpNotificationsDestination } from "@/lib/database/Guilds/setLvlUpNotificationDestination";
 
-export interface ActionUpdateChannelsReturn {
+export interface ActionUpdateSettingsReturn {
     success: boolean,
     message?: string,
     lvlUpNotificationDestination: { setting: LvlUpNotifactionDestinations, channel: string | null },
 }
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export async function ActionUpdateSettings(prevState: any, data: FormData): Promise<ActionUpdateChannelsReturn> {
+export async function ActionUpdateSettings(prevState: any, data: FormData): Promise<ActionUpdateSettingsReturn> {
     const guildID = data.get("guild-id") as string;
     const lvlUpNotificationDestinationSetting = data.get("lvlUpNotificationDestinationSetting") as LvlUpNotifactionDestinations;
     const lvlUpNotificationDestinationChannel = data.get("lvlUpNotificationDestinationChannel") as string | null;

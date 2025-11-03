@@ -1,28 +1,36 @@
-import { ActionUpdateRoles } from "@/_Actions/ActionUpdateRoles";
+import { ActionUpdateRoles, ActionUpdateRolesReturn } from "@/_Actions/ActionUpdateRoles";
 import FormSubmitButton from "@/components/Buttons/FormSubmitButton";
 import Col from "@/components/Col";
 import Dropdown from "@/components/Inputs/Dropdown";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorMessage from "@/components/Messages/ErrorMessage";
 import Row from "@/components/Row";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export default function GuildRolesContent({ guildData, DBGuildData }: { guildData: any, DBGuildData: any }) {
-    const [formValues, action] = useActionState(ActionUpdateRoles, {
+    const initial = useMemo(() => ({
         success: false,
         message: undefined,
         accessRole: DBGuildData.accessRole ?? "",
         NSFWRole: DBGuildData.nsfwRole ?? "",
         managementRoles: DBGuildData.permittedToVerify ?? []
-    });
+    }), [DBGuildData]);
+
+    const [serverState, action] = useActionState(ActionUpdateRoles, initial);
+    const [draft, setDraft] = useState<ActionUpdateRolesReturn>(initial);
     const [modified, setModified] = useState<boolean>(false);
     const [roles, setRoles] = useState<Array<any> | null>(null); /* eslint-disable-line @typescript-eslint/no-explicit-any */
     const [error, setError] = useState<string | null>(null);
 
+    useEffect(() => setDraft(initial), [guildData, initial]);
+
     useEffect(() => {
-        if (formValues.success) setModified(false);
-    }, [formValues]);
+        if (serverState.success) {
+            setDraft(serverState);
+            setModified(false);
+        }
+    }, [serverState]);
 
     useEffect(() => {
         (async () => {
@@ -58,10 +66,12 @@ export default function GuildRolesContent({ guildData, DBGuildData }: { guildDat
                 <Col>
                     <p className="">Access Role:</p>
                     <Dropdown
-                        key={formValues.accessRole}
                         name="accessRole"
-                        defaultValue={formValues.accessRole ?? ""}
-                        onChange={() => setModified(true)}
+                        value={draft.accessRole ?? ""}
+                        onChange={(e: any) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
+                            setDraft(prev => ({ ...prev, accessRole: e.target.value }));
+                            setModified(true);
+                        }}
                     >
                         {
                             (!DBGuildData.accessRole || DBGuildData.accessRole.trim() === "")
@@ -69,8 +79,7 @@ export default function GuildRolesContent({ guildData, DBGuildData }: { guildDat
                             <option disabled value="">Unset</option>
                         }
                         {
-                            /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                            roles.map((role: any, i: number) => {
+                            roles.map((role: any, i: number) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
                                 return <option key={i} value={role.id}>@{role.name}</option>
                             })
                         }
@@ -80,10 +89,12 @@ export default function GuildRolesContent({ guildData, DBGuildData }: { guildDat
                 <Col>
                     <p className="">NSFW Role:</p>
                     <Dropdown
-                        key={formValues.NSFWRole}
                         name="NSFWRole"
-                        defaultValue={formValues.NSFWRole ?? ""}
-                        onChange={() => setModified(true)}
+                        value={draft.NSFWRole ?? ""}
+                        onChange={(e: any) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
+                            setDraft(prev => ({ ...prev, NSFWRole: e.target.value }));
+                            setModified(true);
+                        }}
                     >
                         {
                             (!DBGuildData.nsfwRole || DBGuildData.nsfwRole.trim() === "")
@@ -91,8 +102,7 @@ export default function GuildRolesContent({ guildData, DBGuildData }: { guildDat
                             <option disabled value="">Unset</option>
                         }
                         {
-                            /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                            roles.map((role: any, i: number) => {
+                            roles.map((role: any, i: number) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
                                 return <option key={i} value={role.id}>@{role.name}</option>
                             })
                         }
@@ -102,11 +112,14 @@ export default function GuildRolesContent({ guildData, DBGuildData }: { guildDat
                 <Col>
                     <p className="">Management Allowlist Roles:</p>
                     <Dropdown
-                        key={formValues.managementRoles.join(",")}
                         multiple
                         name="managementRoles"
-                        defaultValue={formValues.managementRoles ?? []}
-                        onChange={() => setModified(true)}
+                        value={draft.managementRoles ?? []}
+                        onChange={(e: any) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
+                            const selected = Array.from(e.target.selectedOptions).map((opt: any) => opt.value); /* eslint-disable-line @typescript-eslint/no-explicit-any */
+                            setDraft(prev => ({ ...prev, managementRoles: selected }));
+                            setModified(true);
+                        }}
                     >
                         {
                             (!DBGuildData.permittedToVerify || DBGuildData.permittedToVerify.length === 0)
@@ -114,8 +127,7 @@ export default function GuildRolesContent({ guildData, DBGuildData }: { guildDat
                             <option disabled value="">Unset</option>
                         }
                         {
-                            /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                            roles.map((role: any, i: number) => {
+                            roles.map((role: any, i: number) => { /* eslint-disable-line @typescript-eslint/no-explicit-any */
                                 return <option key={i} value={role.id}>@{role.name}</option>
                             })
                         }

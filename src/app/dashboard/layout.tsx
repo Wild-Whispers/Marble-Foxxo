@@ -29,6 +29,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         );
 
         guilds = manageableGuilds;
+        guilds = guilds.sort((a: any, b: any) => a.name.localeCompare(b.name)); /* eslint-disable-line @typescript-eslint/no-explicit-any */
     }
 
     return (
