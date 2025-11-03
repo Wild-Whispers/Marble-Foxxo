@@ -1,8 +1,8 @@
 import { FetchDiscordAvatarURL } from "@/_Helpers/FetchDiscordAvatarURL";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, context: { params: { id: string, avatarHash: string } }) {
-    const { id, avatarHash } = await context.params;
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string, avatarHash: string }> }) {
+    const { id, avatarHash } = await params;
 
     try {
         // Fetch the guild from DB

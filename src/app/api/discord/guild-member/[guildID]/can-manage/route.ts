@@ -1,8 +1,8 @@
 import { CanUserManageGuild } from "@/_Helpers/CanUserManageGuild";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, context: { params: { guildID: string } }) {
-    const { guildID } = await context.params;
+export async function GET(req: NextRequest, { params }: { params: Promise<{ guildID: string }> }) {
+    const { guildID } = await params;
     const authHeader = req.headers.get("authorization");
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
