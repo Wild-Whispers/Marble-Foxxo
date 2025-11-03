@@ -5,7 +5,6 @@ import ErrorMessage from "@/components/Messages/ErrorMessage";
 import Row from "@/components/Row";
 import { cookies } from "next/headers";
 import Image from "next/image";
-import Link from "next/link";
 
 export default async function Dashboard() {
     const cookieStore = await cookies();
