@@ -17,7 +17,7 @@ export default function Navbar() {
             "
         >
 
-            <Image alt="Navbar banner" src="/assets/navbar-banner-v2.png" width={2000} height={350} className="w-65" priority />
+            <Image alt="Navbar banner" src="/assets/navbar-banner-v2-beta.png" width={2000} height={350} className="w-65" priority />
 
             <Row id="nav-end-section" classes="items-center gap-4">
                 <Link
