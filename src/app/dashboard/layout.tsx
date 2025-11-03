@@ -51,7 +51,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
                     flex-1
                     p-2
     
-                    bg-teal-950
+                    bg-gradient-to-br
+                    from-teal-950
+                    via-teal-800
+                    via-teal-700
+                    to-teal-800
                     gap-4
                 "
             >

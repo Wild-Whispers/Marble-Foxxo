@@ -5,7 +5,20 @@ import Row from "@/components/Row";
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export default function GuildOverviewContent({ guildData, DBGuildData }: { guildData: any, DBGuildData: any }) {
     return (
-        <Col classes="p-1.5 bg-teal-950 rounded-md gap-1.5">
+        <Col
+            classes="
+                p-1.5
+                
+                bg-gradient-to-br
+                from-teal-950
+                via-teal-800
+                via-teal-700
+                to-teal-800
+
+                rounded-md
+                gap-1.5
+            "
+        >
 
             <Row classes="items-center gap-2">
                 <p className="">Guild:</p>

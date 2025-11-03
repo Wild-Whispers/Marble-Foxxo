@@ -33,7 +33,18 @@ export default function UpdateChannelsForm({ guildID, guildData, channels }: { g
     return (
         <form
             action={action}
-            className="p-1.5 bg-teal-950 rounded-md gap-1.5"
+            className="
+                p-1.5
+                
+                bg-gradient-to-br
+                from-teal-950
+                via-teal-800
+                via-teal-700
+                to-teal-800
+
+                rounded-md
+                gap-1.5
+            "
         >
             {/*
             - set member join channel

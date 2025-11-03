@@ -25,7 +25,20 @@ export default async function Dashboard() {
         const banner = await FetchDiscordBannerURL(userData.id, bannerHash);
 
         return (
-            <Col classes="gap-2">
+            <Col
+                classes="
+                    p-1.5
+                    
+                    bg-gradient-to-br
+                    from-teal-950
+                    via-teal-800
+                    via-teal-700
+                    to-teal-800
+    
+                    rounded-md
+                    gap-1.5
+                "
+            >
 
                 <Col classes="relative p-2 w-full h-50">
                     {
