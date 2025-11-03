@@ -4,8 +4,10 @@ import Row from "@/components/Row";
 import Image from "next/image";
 import NavbarAccountSection from "./NavbarAccountSection";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
 export default function Navbar() {
+    const userDataRaw = Cookies.get("discord_user");
 
     return (
         <Row
@@ -14,12 +16,38 @@ export default function Navbar() {
                 justify-between
                 p-4
                 bg-[linear-gradient(to_right,_#042f2e_0%,_#042f2e00_5%,_#09090b_50%,_#042f2e00_95%,_#042f2e_100%)]
+                border-b
+                border-[#FF2DA0]
             "
         >
 
             <Image alt="Navbar banner" src="/assets/navbar-banner-v2-beta.png" width={2000} height={350} className="w-65" priority />
 
             <Row id="nav-end-section" classes="items-center gap-4">
+                {
+                    userDataRaw &&
+                    <Link
+                    id="nav-bot-invite-button"
+                        className="
+                            p-2
+                            px-4
+
+                            bg-amber-800/30
+                            
+                            border-1
+                            border-[#FF2DA0]
+
+                            hover:bg-[#AB1567]/40
+                            hover:border-[#E01D88]
+
+                            rounded-full
+                            font-semibold
+                        "
+                        href="/dashboard"
+                    >
+                        My Dashboard
+                    </Link>
+                }
                 <Link
                     id="nav-bot-invite-button"
                     className="

@@ -12,16 +12,16 @@ export default function NavbarAccountSectionButton({ text, href }: { text: strin
                 flex-row
                 items-center
                 p-1.5
-                
+
                 bg-gradient-to-tr
-                from-teal-400
-                via-teal-600
-                to-teal-400
+                from-[#FF2DA0]
+                via-[#BD1972]
+                to-[#FF2DA0]
 
                 hover:bg-gradient-to-tr
-                hover:from-teal-600
-                hover:via-teal-600
-                hover:to-teal-600
+                hover:from-[#BD1972]
+                hover:via-[#BD1972]
+                hover:to-[#BD1972]
 
                 text-white
                 font-semibold
