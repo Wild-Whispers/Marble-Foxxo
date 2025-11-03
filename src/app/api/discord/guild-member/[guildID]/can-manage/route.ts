@@ -1,7 +1,7 @@
 import { CanUserManageGuild } from "@/_Helpers/CanUserManageGuild";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: Request, { params }: { params: { guildID: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Record<string, string> }) {
     const { guildID } = await params;
     const authHeader = req.headers.get("authorization");
 

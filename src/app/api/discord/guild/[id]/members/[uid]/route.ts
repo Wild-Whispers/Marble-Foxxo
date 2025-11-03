@@ -1,7 +1,7 @@
 import { DiscordFetchGuildMember } from "@/lib/discord/FetchGuildMember";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: Request, { params }: { params: { id: string, uid: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Record<string, string> }) {
     const { id: guildID, uid } = await params;
 
     try {
