@@ -58,7 +58,8 @@ export async function GET(req: NextRequest) {
         if (process.env.NODE_ENV === "development") console.log("User Data:", userData);
 
         // Store access token & user
-        const response = NextResponse.redirect(new URL("/dashboard", req.url));
+        const baseUrl = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://marblefoxxo.wildwhispers.xyz";
+        const response = NextResponse.redirect(`${baseUrl}/dashboard`);
 
         response.cookies.set("discord_token", accessToken, {
             httpOnly: true,
