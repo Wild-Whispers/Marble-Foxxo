@@ -3,6 +3,7 @@
 import Row from "@/components/Row";
 import Image from "next/image";
 import NavbarEndSection from "./NavbarEndSection";
+import Link from "next/link";
 
 export default function Navbar() {
     return (
@@ -17,7 +18,9 @@ export default function Navbar() {
             "
         >
 
-            <Image alt="Navbar banner" src="/assets/navbar-banner-v2-beta.png" width={2000} height={350} className="w-65" priority />
+            <Link href="/">
+                <Image alt="Navbar banner" src="/assets/navbar-banner-v2-beta.png" width={2000} height={350} className="w-65" priority />
+            </Link>
 
             <NavbarEndSection />
 
