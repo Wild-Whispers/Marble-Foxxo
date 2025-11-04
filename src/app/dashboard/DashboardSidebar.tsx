@@ -23,6 +23,8 @@ export default function DashboardSidebar({ accessToken, guilds }: { accessToken:
     useEffect(() => {
         (async () => {
             try {
+                if (!guildParam || !accessToken) return; // Should only occur if session expired.
+
                 // Fetch if user is manager
                 fetch(`/api/discord/guild-member/${guildParam}/can-manage`, { headers: { "Authorization": `Bearer ${accessToken}` } })
                     .then(res => res.json())

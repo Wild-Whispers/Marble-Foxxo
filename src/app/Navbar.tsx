@@ -2,13 +2,9 @@
 
 import Row from "@/components/Row";
 import Image from "next/image";
-import NavbarAccountSection from "./NavbarAccountSection";
-import Link from "next/link";
-import Cookies from "js-cookie";
+import NavbarEndSection from "./NavbarEndSection";
 
 export default function Navbar() {
-    const userDataRaw = Cookies.get("discord_user");
-
     return (
         <Row
             id="navbar"
@@ -23,59 +19,7 @@ export default function Navbar() {
 
             <Image alt="Navbar banner" src="/assets/navbar-banner-v2-beta.png" width={2000} height={350} className="w-65" priority />
 
-            <Row id="nav-end-section" classes="items-center gap-4">
-                {
-                    userDataRaw &&
-                    <Link
-                    id="nav-bot-invite-button"
-                        className="
-                            p-2
-                            px-4
-
-                            bg-amber-800/30
-                            
-                            border-1
-                            border-[#FF2DA0]
-
-                            hover:bg-[#AB1567]/40
-                            hover:border-[#E01D88]
-
-                            rounded-full
-                            font-semibold
-                        "
-                        href="/dashboard"
-                    >
-                        My Dashboard
-                    </Link>
-                }
-                <Link
-                    id="nav-bot-invite-button"
-                    className="
-                        p-2
-                        px-4
-
-                        bg-violet-800/30
-                        
-                        border-1
-                        border-violet-600
-
-                        hover:bg-violet-800/40
-                        hover:border-violet-500
-
-                        rounded-full
-                        font-semibold
-                    "
-                    href={
-                        process.env.NODE_ENV === "development" ?
-                        "https://discord.com/oauth2/authorize?client_id=1419047521606570004&permissions=2840998996344823&integration_type=0&scope=bot" :
-                        "https://discord.com/oauth2/authorize?client_id=1390546028226412544&permissions=2840998996344823&integration_type=0&scope=bot"
-                    }
-                >
-                    Invite Marble Foxxo
-                </Link>
-
-                <NavbarAccountSection />
-            </Row>
+            <NavbarEndSection />
 
         </Row>
     );
