@@ -5,10 +5,10 @@ import { GuildMember } from "discord.js";
 export async function pausePrompts(member: GuildMember) {
     const mongo = getMongo();
 
-    const pauseTimeInMilliseconds = 60 * 60 * 1000; // 60 minutes / 1 hour
+    const oneHour = 60 * 60 * 1000;
+    const oneDay = oneHour * 24;
+    const pauseTimeInMilliseconds = oneDay;
     const promptsPausedUntil = Date.now() + pauseTimeInMilliseconds;
-
-    //console.log(member.id, member.guild.id)
 
     await mongo.database
         .collection("guild-members")
