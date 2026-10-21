@@ -6,7 +6,7 @@
     "bot_avatar_filename_with_ext": "bot_avatar.png",
     "bot_banner_filename_with_ext": "",
     "art_settings": {
-        "use_art_scraper": true,
+        "use_art_scraper": false,
         "allow_nsfw_scraped_art": true,
         "e621_api_username": "QuietWind01",
         "tags_blacklist": [

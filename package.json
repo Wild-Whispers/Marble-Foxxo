@@ -1,5 +1,5 @@
 {
-  "name": "marble-foxxo",
+  "name": "the-ground-floor-coalition-bot",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -7,8 +7,8 @@
     "dev:web": "next dev --turbopack -p 3000",
     "build:web": "next build",
     "start:web": "next start",
-    "dev:marble-foxxo": "tsx watch src/DiscordBot/Bot.ts",
-    "start:marble-foxxo": "tsx src/DiscordBot/Bot.ts"
+    "dev:bot": "tsx watch src/DiscordBot/Bot.ts",
+    "start:bot": "tsx src/DiscordBot/Bot.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -42,7 +42,7 @@
     "eslint": "^9",
     "eslint-config-next": "^16.4.2",
     "tailwindcss": "^4",
-    "tsx": "^4.20.5",
+    "tsx": "^4.23.15",
     "tw-animate-css": "^1.3.8",
     "typescript": "^5"
   }
