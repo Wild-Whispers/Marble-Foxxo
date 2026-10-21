@@ -1,5 +1,5 @@
 import { getMongo } from "@/lib/mongo";
-import { defaultGuildMemberData } from "@/MarbleFoxxo/lib/defaultGuildMemberData";
+import { defaultGuildMemberData } from "@/DiscordBot/lib/defaultGuildMemberData";
 import { Guild, GuildMember } from "discord.js";
 
 export async function incrementPollVotesCast(guild: Guild, member: GuildMember) {

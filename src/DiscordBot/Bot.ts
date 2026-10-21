@@ -26,7 +26,7 @@ import { getMongo } from "@/lib/mongo";
 import { readdirSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import startBatchSendModerationLogs from "./Cron/ModerationLogSend";
-import path from "node:path";
+import path, { join } from "node:path";
 import { fetchE6Media, scheduleFetchE6Media } from "./Cron/FetchE6Media";
 import MessageLeveling from "./lib/handlers/MessageLeveling";
 import MemberJoinLeave from "./lib/handlers/MemberJoinLeave";
@@ -45,12 +45,16 @@ import { removeGuild } from "@/lib/database/Guilds/removeGuild";
 import { setJoinedVCTimestamp } from "@/lib/database/Members/setJoinedVCTimestamp";
 import { setLeftVCTimestamp } from "@/lib/database/Members/setLeftVCTimestamp";
 import { incrementStreamingSessionsStarted } from "@/lib/database/Members/incrementStreamingSessionsStarted";
+import { getSettings } from "@/getSettings";
 
 // Configure dotenv
 dotenv.config();
 
 // Configure mongo
 const mongo = getMongo();
+
+// Get settings file
+const settings = getSettings();
 
 // Create client
 const client = new Client({
@@ -105,14 +109,36 @@ const rest = new REST().setToken(process.env.MARBLE_FOXXO_TOKEN!);
         );
 
         console.info(`[${new Date().toISOString()}] [Slash Commands] Successfully refreshed application commands.`);
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    } catch (error: any) {
+    } catch (error: any) { /* eslint-disable-line @typescript-eslint/no-explicit-any */
         console.error(`[${new Date().toISOString()}] [Slash Commands] Error refreshing appliation commands:`, error);
     }
 })();
 
 /* ------------------------------------------------------------ Listeners ------------------------------------------------------------ */
 client.once(Events.ClientReady, async readyClient => {
+    // Set bot name
+    client.user
+        ?.setUsername(settings.bot_displayname)
+        .then((user: any) => console.info(`[${new Date().toISOString()}] This instance is now named ${user?.username}!`)) /* eslint-disable-line @typescript-eslint/no-explicit-any */
+        .catch(console.error);
+
+    // Set bot bio
+    client.application?.edit({ description: settings.bot_bio_use_linebreak_chars });
+
+    // Set bot avatar
+    await client.user
+        ?.setAvatar(join(__dirname,`${settings.bot_avatar_filename_with_ext}`))
+        .then((user: any) => console.info(`[${new Date().toISOString()}] This instance's avatar is now set!`)) /* eslint-disable-line @typescript-eslint/no-explicit-any */
+        .catch(console.error);
+
+    // Set bot banner
+    if (settings.bot_banner_filename_with_ext.trim().length > 0) {
+        await client.user
+            ?.setBanner(join(__dirname,`${settings.bot_banner_filename_with_ext}`))
+            .then((user: any) => console.info(`[${new Date().toISOString()}] This instance's banner is now set!`)) /* eslint-disable-line @typescript-eslint/no-explicit-any */
+            .catch(console.error);
+    }
+
     // Log ready status
     console.info(`[${new Date().toISOString()}] Logged in as ${readyClient.user.tag}!`);
 

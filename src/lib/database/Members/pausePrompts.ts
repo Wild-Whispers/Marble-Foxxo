@@ -1,5 +1,5 @@
+import { defaultGuildMemberData } from "@/DiscordBot/lib/defaultGuildMemberData";
 import { getMongo } from "@/lib/mongo";
-import { defaultGuildMemberData } from "@/MarbleFoxxo/lib/defaultGuildMemberData";
 import { GuildMember } from "discord.js";
 
 export async function pausePrompts(member: GuildMember) {

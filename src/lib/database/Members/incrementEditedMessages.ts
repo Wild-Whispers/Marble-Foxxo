@@ -1,5 +1,5 @@
 import { getMongo } from "@/lib/mongo";
-import { defaultGuildMemberData } from "@/MarbleFoxxo/lib/defaultGuildMemberData";
+import { defaultGuildMemberData } from "@/DiscordBot/lib/defaultGuildMemberData";
 import { Message } from "discord.js";
 
 export async function incrementEditedMessages(message: Message) {

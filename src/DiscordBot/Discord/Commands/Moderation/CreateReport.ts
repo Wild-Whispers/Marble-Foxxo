@@ -2,10 +2,10 @@ import { AttachmentBuilder, ChannelType, ChatInputCommandInteraction, Colors, Gu
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
 import path from "node:path";
-import { listenToThread } from "@/MarbleFoxxo/MarbleFoxxo";
 import { fetchGuild } from "@/lib/database/Guilds/fetchGuild";
 import { incrementReports } from "@/lib/database/Guilds/incrementReports";
 import { appendReportMessage } from "@/lib/database/Moderation/appendReportMessage";
+import { listenToThread } from "@/DiscordBot/Bot";
 
 const name = "create-report";
 const description = "Set the channel where member join logs are sent.";

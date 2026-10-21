@@ -1,4 +1,4 @@
-import { HasModPermissionResult, memberHasModPermission } from "@/MarbleFoxxo/lib/helpers/memberHasModPermission";
+import { HasModPermissionResult, memberHasModPermission } from "@/DiscordBot/lib/helpers/memberHasModPermission";
 import { ChatInputCommandInteraction, GuildMember, MessageFlags, SlashCommandBuilder } from "discord.js";
 
 const name = "verify";

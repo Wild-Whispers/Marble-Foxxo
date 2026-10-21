@@ -2,9 +2,9 @@ import { AttachmentBuilder, ChatInputCommandInteraction, Colors, Guild, MessageF
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
 import path from "node:path";
-import getThreadFromInteraction from "@/MarbleFoxxo/lib/helpers/getThreadFromInteraction";
 import { GuildReport } from "@/_Interfaces/GuildReport";
 import { fetchGuildReport } from "@/lib/database/Guilds/fetchGuildReport";
+import getThreadFromInteraction from "@/DiscordBot/lib/helpers/getThreadFromInteraction";
 
 const name = "close-report";
 const description = "Set the channel where member join logs are sent.";

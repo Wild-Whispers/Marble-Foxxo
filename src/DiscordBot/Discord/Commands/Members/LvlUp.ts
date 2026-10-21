@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, Colors, EmbedBuilder, Guild, GuildMember, SlashCommandBuilder } from "discord.js";
-import isMemberEligibleForLvlUp from "@/MarbleFoxxo/lib/helpers/isMemberEligibleForLvlUp";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import { fetchGuildMember } from "@/lib/database/Members/fetchGuildMember";
 import { incrementLvl } from "@/lib/database/Members/incrementLvl";
 import { fetchLvlRole } from "@/lib/database/Guilds/fetchLvlRole";
+import isMemberEligibleForLvlUp from "@/DiscordBot/lib/helpers/isMemberEligibleForLvlUp";
 
 const name = "lvl-up";
 const description = "Level up!";

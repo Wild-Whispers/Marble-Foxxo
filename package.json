@@ -7,8 +7,8 @@
     "dev:web": "next dev --turbopack -p 3000",
     "build:web": "next build",
     "start:web": "next start",
-    "dev:marble-foxxo": "tsx watch src/MarbleFoxxo/MarbleFoxxo.ts",
-    "start:marble-foxxo": "tsx src/MarbleFoxxo/MarbleFoxxo.ts"
+    "dev:marble-foxxo": "tsx watch src/DiscordBot/Bot.ts",
+    "start:marble-foxxo": "tsx src/DiscordBot/Bot.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

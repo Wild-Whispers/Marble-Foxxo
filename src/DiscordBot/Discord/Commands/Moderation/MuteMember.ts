@@ -1,9 +1,9 @@
-import { HasModPermissionResult, memberHasModPermission } from "@/MarbleFoxxo/lib/helpers/memberHasModPermission";
 import { AttachmentBuilder, ChatInputCommandInteraction, Colors, EmbedBuilder, GuildMember, SlashCommandBuilder } from "discord.js";
 import ErrorEmbed from "../../EmbedWrappers/ErrorEmbed";
 import path from "node:path";
 import MediaEmbed from "../../EmbedWrappers/MediaEmbed";
 import { muteMember } from "@/lib/database/Moderation/muteMember";
+import { HasModPermissionResult, memberHasModPermission } from "@/DiscordBot/lib/helpers/memberHasModPermission";
 
 const name = "mute";
 const description = "Mute a server member.";

@@ -1,5 +1,5 @@
 import { getMongo } from "@/lib/mongo";
-import { defaultGuildMemberData } from "@/MarbleFoxxo/lib/defaultGuildMemberData";
+import { defaultGuildMemberData } from "@/DiscordBot/lib/defaultGuildMemberData";
 import { GuildMember } from "discord.js";
 import { addGuildMember } from "./addGuildMember";
 import { incrementGuildTotalVCTime } from "../Guilds/incrementGuildTotalVCTime";

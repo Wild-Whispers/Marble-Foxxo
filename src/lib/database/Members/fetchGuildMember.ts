@@ -1,6 +1,6 @@
+import { defaultGuildMemberData } from "@/DiscordBot/lib/defaultGuildMemberData";
 import { getMongo } from "@/lib/mongo";
 import { GuildMember } from "discord.js";
-import { defaultGuildMemberData } from "@/MarbleFoxxo/lib/defaultGuildMemberData";
 
 export async function fetchGuildMember(member: GuildMember) {
     const mongo = getMongo();

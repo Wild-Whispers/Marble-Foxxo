@@ -1,6 +1,6 @@
+import MediaEmbed from "@/DiscordBot/Discord/EmbedWrappers/MediaEmbed";
 import { decrementTotalMembers } from "@/lib/database/Guilds/decrementTotalMembers";
 import { incrementTotalMembers } from "@/lib/database/Guilds/incrementTotalMembers";
-import MediaEmbed from "@/MarbleFoxxo/Discord/EmbedWrappers/MediaEmbed";
 import { AttachmentBuilder, Colors, GuildMember, PartialGuildMember } from "discord.js";
 import path from "node:path";
 
