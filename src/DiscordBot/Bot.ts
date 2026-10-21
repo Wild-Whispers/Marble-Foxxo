@@ -157,8 +157,10 @@ client.once(Events.ClientReady, async readyClient => {
     startBatchSendModerationLogs(client);
 
     // Fetch e6 media initially and then schedule it
-    fetchE6Media();
-    scheduleFetchE6Media();
+    if (settings.art_settings.use_art_scraper) {
+        fetchE6Media();
+        scheduleFetchE6Media();
+    }
 });
 
 client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
