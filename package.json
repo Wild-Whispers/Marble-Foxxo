@@ -1,14 +1,14 @@
 {
   "name": "marble-foxxo",
-  "version": "1.0.0",
+  "version": "1.0.0-beta",
   "private": true,
   "scripts": {
     "lint": "next lint",
     "dev:web": "next dev --turbopack -p 3000",
     "build:web": "next build",
     "start:web": "next start",
-    "dev:marble-foxxo": "tsx watch src/DiscordBot/Bot.ts",
-    "start:marble-foxxo": "tsx src/DiscordBot/Bot.ts"
+    "dev:bot": "tsx watch src/DiscordBot/Bot.ts",
+    "start:bot": "tsx src/DiscordBot/Bot.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

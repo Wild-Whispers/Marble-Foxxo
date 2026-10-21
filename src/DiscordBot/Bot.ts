@@ -115,7 +115,7 @@ const rest = new REST().setToken(process.env.MARBLE_FOXXO_TOKEN!);
 })();
 
 /* ------------------------------------------------------------ Listeners ------------------------------------------------------------ */
-client.once(Events.ClientReady, async readyClient => {
+client.once(Events.ClientReady, async readyClient => { 
     // Change bot user data after delay (to avoid rate-limiting during dev)
     setTimeout(async () => {
         // Set bot name
@@ -142,7 +142,6 @@ client.once(Events.ClientReady, async readyClient => {
                 .catch(console.error);
         }
     }, 12000);
-    
 
     // Log ready status
     console.info(`[${new Date().toISOString()}] Logged in as ${readyClient.user.tag}!`);
@@ -209,6 +208,11 @@ client.on(Events.MessageDelete, async (message: Message | PartialMessage) => {
 
 client.on(Events.MessageUpdate, async (oldMsg: Message | PartialMessage, newMsg: Message | PartialMessage) => {
     if (oldMsg.author?.bot || newMsg.author?.bot) return;
+
+    // Ensure only actual edited messages get handled
+    if (oldMsg.partial || newMsg.partial) return;
+
+    if (oldMsg.content === newMsg.content) return;
 
     // Cache edited message
     await cacheEditedMessage(oldMsg, newMsg as Message);
