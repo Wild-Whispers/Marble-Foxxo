@@ -4,7 +4,7 @@
     "bot_displayname": "MarbleFoxxo Dev",
     "bot_bio_use_linebreak_chars": "Welcome!\n- Invite me to your server: https://discord.com/oauth2/authorize?client_id=1390546028226412544&permissions=7617270528077815&integration_type=0&scope=bot \n- Manage your guild with MarbleFoxxo™ v1.0.0-beta: https://marblefoxxo.wildwhispers.xyz/",
     "bot_avatar_filename_with_ext": "bot_avatar.png",
-    "bot_banner_filename_with_ext": "bot_banner.png",
+    "bot_banner_filename_with_ext": "",
     "art_settings": {
         "use_art_scraper": true,
         "allow_nsfw_scraped_art": true,
