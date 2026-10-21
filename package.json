@@ -1,6 +1,6 @@
 {
-  "name": "the-ground-floor-coalition-bot",
-  "version": "1.0.0",
+  "name": "marble-foxxo",
+  "version": "1.0.0-beta",
   "private": true,
   "scripts": {
     "lint": "next lint",
