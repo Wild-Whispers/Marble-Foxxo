@@ -116,28 +116,33 @@ const rest = new REST().setToken(process.env.MARBLE_FOXXO_TOKEN!);
 
 /* ------------------------------------------------------------ Listeners ------------------------------------------------------------ */
 client.once(Events.ClientReady, async readyClient => {
-    // Set bot name
-    client.user
-        ?.setUsername(settings.bot_displayname)
-        .then((user: any) => console.info(`[${new Date().toISOString()}] This instance is now named ${user?.username}!`)) /* eslint-disable-line @typescript-eslint/no-explicit-any */
-        .catch(console.error);
-
-    // Set bot bio
-    client.application?.edit({ description: settings.bot_bio_use_linebreak_chars });
-
-    // Set bot avatar
-    await client.user
-        ?.setAvatar(join(__dirname,`${settings.bot_avatar_filename_with_ext}`))
-        .then((user: any) => console.info(`[${new Date().toISOString()}] This instance's avatar is now set!`)) /* eslint-disable-line @typescript-eslint/no-explicit-any */
-        .catch(console.error);
-
-    // Set bot banner
-    if (settings.bot_banner_filename_with_ext.trim().length > 0) {
-        await client.user
-            ?.setBanner(join(__dirname,`${settings.bot_banner_filename_with_ext}`))
-            .then((user: any) => console.info(`[${new Date().toISOString()}] This instance's banner is now set!`)) /* eslint-disable-line @typescript-eslint/no-explicit-any */
+    // Change bot user data after delay (to avoid rate-limiting during dev)
+    setTimeout(async () => {
+        // Set bot name
+        client.user
+            ?.setUsername(settings.bot_displayname)
+            .then((user: any) => console.info(`[${new Date().toISOString()}] This instance is now named ${user?.username}!`)) /* eslint-disable-line @typescript-eslint/no-explicit-any */
             .catch(console.error);
-    }
+
+        // Set bot bio
+        const whiteLabelAppend = `© MarbleFoxxo 2026\nPowered by © Wild Whispers Network\nDeveloped by @quietwinduponthemoor\nBase Version ${settings.bot_version}`;
+        client.application?.edit({ description: settings.bot_bio_use_linebreak_chars + "\n\n" + whiteLabelAppend });
+
+        // Set bot avatar
+        client.user
+            ?.setAvatar(join(__dirname,`${settings.bot_avatar_filename_with_ext}`))
+            .then((user: any) => console.info(`[${new Date().toISOString()}] This instance's avatar is now set!`)) /* eslint-disable-line @typescript-eslint/no-explicit-any */
+            .catch(console.error);
+
+        // Set bot banner
+        if (settings.bot_banner_filename_with_ext.trim().length > 0) {
+            client.user
+                ?.setBanner(join(__dirname,`${settings.bot_banner_filename_with_ext}`))
+                .then((user: any) => console.info(`[${new Date().toISOString()}] This instance's banner is now set!`)) /* eslint-disable-line @typescript-eslint/no-explicit-any */
+                .catch(console.error);
+        }
+    }, 12000);
+    
 
     // Log ready status
     console.info(`[${new Date().toISOString()}] Logged in as ${readyClient.user.tag}!`);
